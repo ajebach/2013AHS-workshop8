@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Workshop 8 - Chi-Square Tests: Analysing Categorical Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="worksheet8_files/libs/clipboard/clipboard.min.js"></script>
+<script src="worksheet8_files/libs/quarto-html/quarto.js"></script>
+<script src="worksheet8_files/libs/quarto-html/popper.min.js"></script>
+<script src="worksheet8_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="worksheet8_files/libs/quarto-html/anchor.min.js"></script>
+<link href="worksheet8_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="worksheet8_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="worksheet8_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="worksheet8_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="worksheet8_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script type="module" src="worksheet8_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="worksheet8_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-is-chi-square-testing-good-for" id="toc-what-is-chi-square-testing-good-for" class="nav-link active" data-scroll-target="#what-is-chi-square-testing-good-for">What is Chi-Square Testing Good For?</a>
+  <ul class="collapse">
+  <li><a href="#todays-workflow-follow-in-order" id="toc-todays-workflow-follow-in-order" class="nav-link" data-scroll-target="#todays-workflow-follow-in-order">Today’s workflow (follow in order)</a></li>
+  </ul></li>
+  <li><a href="#datasets" id="toc-datasets" class="nav-link" data-scroll-target="#datasets">Datasets</a></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">Research Questions</a></li>
+  <li><a href="#refresher-understanding-chi-square-components" id="toc-refresher-understanding-chi-square-components" class="nav-link" data-scroll-target="#refresher-understanding-chi-square-components">Refresher: Understanding Chi-Square Components</a>
+  <ul class="collapse">
+  <li><a href="#key-terms-review" id="toc-key-terms-review" class="nav-link" data-scroll-target="#key-terms-review">Key Terms Review:</a></li>
+  </ul></li>
+  <li><a href="#task-1---chi-square-test-of-homogeneity-brisbane-lions-vs-geelong-cats" id="toc-task-1---chi-square-test-of-homogeneity-brisbane-lions-vs-geelong-cats" class="nav-link" data-scroll-target="#task-1---chi-square-test-of-homogeneity-brisbane-lions-vs-geelong-cats">Task 1 - Chi-Square Test of Homogeneity: Brisbane Lions vs Geelong Cats</a>
+  <ul class="collapse">
+  <li><a href="#scenario-details" id="toc-scenario-details" class="nav-link" data-scroll-target="#scenario-details">Scenario Details:</a></li>
+  <li><a href="#section-a-data-setup-and-visualisation" id="toc-section-a-data-setup-and-visualisation" class="nav-link" data-scroll-target="#section-a-data-setup-and-visualisation">Section A: Data Setup and Visualisation</a></li>
+  <li><a href="#section-b-chi-square-test-results" id="toc-section-b-chi-square-test-results" class="nav-link" data-scroll-target="#section-b-chi-square-test-results">Section B: Chi-Square Test Results</a></li>
+  <li><a href="#section-c-understanding-post-hoc-analysis-with-standardised-residuals" id="toc-section-c-understanding-post-hoc-analysis-with-standardised-residuals" class="nav-link" data-scroll-target="#section-c-understanding-post-hoc-analysis-with-standardised-residuals">Section C: Understanding Post-Hoc Analysis with Standardised Residuals</a></li>
+  </ul></li>
+  <li><a href="#task-2---chi-square-goodness-of-fit-medication-adherence" id="toc-task-2---chi-square-goodness-of-fit-medication-adherence" class="nav-link" data-scroll-target="#task-2---chi-square-goodness-of-fit-medication-adherence">Task 2 - Chi-Square Goodness of Fit: Medication Adherence</a>
+  <ul class="collapse">
+  <li><a href="#scenario-details-1" id="toc-scenario-details-1" class="nav-link" data-scroll-target="#scenario-details-1">Scenario Details:</a></li>
+  <li><a href="#section-a-data-preparation---recoding-variables" id="toc-section-a-data-preparation---recoding-variables" class="nav-link" data-scroll-target="#section-a-data-preparation---recoding-variables">Section A: Data Preparation - Recoding Variables</a></li>
+  <li><a href="#section-b-observed-vs-expected-frequencies" id="toc-section-b-observed-vs-expected-frequencies" class="nav-link" data-scroll-target="#section-b-observed-vs-expected-frequencies">Section B: Observed vs Expected Frequencies</a></li>
+  <li><a href="#section-c-goodness-of-fit-test-results" id="toc-section-c-goodness-of-fit-test-results" class="nav-link" data-scroll-target="#section-c-goodness-of-fit-test-results">Section C: Goodness of Fit Test Results</a></li>
+  <li><a href="#section-d-clinical-interpretation" id="toc-section-d-clinical-interpretation" class="nav-link" data-scroll-target="#section-d-clinical-interpretation">Section D: Clinical Interpretation</a></li>
+  </ul></li>
+  <li><a href="#task-3---chi-square-test-of-independence-exercise-type-and-injury" id="toc-task-3---chi-square-test-of-independence-exercise-type-and-injury" class="nav-link" data-scroll-target="#task-3---chi-square-test-of-independence-exercise-type-and-injury">Task 3 - Chi-Square Test of Independence: Exercise Type and Injury</a>
+  <ul class="collapse">
+  <li><a href="#scenario-details-2" id="toc-scenario-details-2" class="nav-link" data-scroll-target="#scenario-details-2">Scenario Details:</a></li>
+  <li><a href="#section-a-data-preparation---recoding-variables-1" id="toc-section-a-data-preparation---recoding-variables-1" class="nav-link" data-scroll-target="#section-a-data-preparation---recoding-variables-1">Section A: Data Preparation - Recoding Variables</a></li>
+  <li><a href="#section-b-contingency-table-and-test-results" id="toc-section-b-contingency-table-and-test-results" class="nav-link" data-scroll-target="#section-b-contingency-table-and-test-results">Section B: Contingency Table and Test Results</a></li>
+  <li><a href="#section-d-post-hoc-analysis-with-standardised-residuals" id="toc-section-d-post-hoc-analysis-with-standardised-residuals" class="nav-link" data-scroll-target="#section-d-post-hoc-analysis-with-standardised-residuals">Section D: Post-Hoc Analysis with Standardised Residuals</a></li>
+  <li><a href="#interpretation-questions" id="toc-interpretation-questions" class="nav-link" data-scroll-target="#interpretation-questions">Interpretation Questions:</a></li>
+  </ul></li>
+  <li><a href="#task-4---interpreting-and-reporting-chi-square-results-do-at-home" id="toc-task-4---interpreting-and-reporting-chi-square-results-do-at-home" class="nav-link" data-scroll-target="#task-4---interpreting-and-reporting-chi-square-results-do-at-home">Task 4 - Interpreting and Reporting Chi-Square Results (Do at Home)</a>
+  <ul class="collapse">
+  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data">The Data</a></li>
+  <li><a href="#your-task" id="toc-your-task" class="nav-link" data-scroll-target="#your-task">Your Task</a></li>
+  <li><a href="#expert-interpretation-for-comparison" id="toc-expert-interpretation-for-comparison" class="nav-link" data-scroll-target="#expert-interpretation-for-comparison">Expert Interpretation for Comparison:</a></li>
+  </ul></li>
+  <li><a href="#summary-and-key-takeaways" id="toc-summary-and-key-takeaways" class="nav-link" data-scroll-target="#summary-and-key-takeaways">Summary and Key Takeaways</a></li>
+  <li><a href="#save-your-work" id="toc-save-your-work" class="nav-link" data-scroll-target="#save-your-work">Save Your Work</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Workshop 8 - Chi-Square Tests: Analysing Categorical Data</h1>
+<p class="subtitle lead">Research Methods and Statistics - T2 2025</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<style type="text/css">
+/* Force labels to appear above text inputs/textareas */
+.observablehq form {
+  display: block !important;
+}
+
+.observablehq form label {
+  display: block !important;
+  width: 100% !important;
+  margin-bottom: 0px !important;
+}
+
+.observablehq form textarea,
+.observablehq form input[type="text"],
+.observablehq form input[type="number"] {
+  display: block !important;
+  width: 100% !important;
+  max-width: 600px !important;
+  margin-top: 0px !important;
+}
+</style>
+</div>
+<p><strong>Introduction</strong></p>
+<p>Welcome to Workshop 8: Chi-Square Tests. Building on your hypothesis testing knowledge, today we’ll explore how to analyse relationships between categorical variables, essential for yes/no outcomes, group memberships, and frequency counts.</p>
+<p>This session guides you through conducting chi-square tests and introduces a new concept: how to identify which specific cells drive significant results (similar to post-hoc tests in ANOVA, but for categorical data).</p>
+<p><strong>Learning Objectives</strong></p>
+<ul>
+<li>Conduct and interpret chi-square tests of independence for two categorical variables</li>
+<li>Apply chi-square goodness of fit tests for single categorical variables</li>
+<li>Learn to identify which cells contribute to significant results</li>
+<li>Create visualisations for categorical data</li>
+<li>Communicate findings with appropriate clinical context</li>
+</ul>
+<section id="what-is-chi-square-testing-good-for" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-chi-square-testing-good-for">What is Chi-Square Testing Good For?</h2>
+<p>Chi-square (χ²) tests analyse categorical data—data that falls into distinct groups rather than continuous measurements. In exercise science, we use it to examine injury patterns, training adherence, or response categories. In pharmacy, it’s essential for analysing adverse event frequencies, prescription patterns, or treatment compliance rates.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Real-world example:</strong> When comparing whether different exercise programmes (resistance, aerobic, combined) lead to different adherence rates (adhered, dropped out), chi-square tests whether the distribution differs from what we’d expect by chance. If 40% typically drop out overall, do all programmes have 40% dropout, or does it vary by programme type?</p>
+</div>
+</div>
+</div>
+<section id="todays-workflow-follow-in-order" class="level3">
+<h3 class="anchored" data-anchor-id="todays-workflow-follow-in-order">Today’s workflow (follow in order)</h3>
+<ul>
+<li><strong>Refresher.</strong> Understanding chi-square statistics</li>
+<li><strong>Task 1</strong> Chi-Square Test of Independence - Quick example: Brisbane Lions vs Geelong Cats scoring patterns</li>
+<li><strong>Task 2</strong> Chi-Square Goodness of Fit - Medication adherence patterns</li>
+<li><strong>Task 3</strong> Chi-Square Test of Independence - Full example: Exercise type and injury occurrence</li>
+<li><strong>Task 4 (for home):</strong> Practice interpretation and reporting categorical findings</li>
+</ul>
+</section>
+</section>
+<section id="datasets" class="level2">
+<h2 class="anchored" data-anchor-id="datasets">Datasets</h2>
+<p><a href="https://lms.griffith.edu.au/courses/27562/files/8353444?wrap=1"><strong>AFL_GF_Preview.csv</strong></a> <strong>(Task 1)</strong></p>
+<p><a href="https://lms.griffith.edu.au/courses/27562/files/8353446?wrap=1"><strong>Medication_Adherence.csv</strong></a> <strong>(Task 2)</strong></p>
+<p><a href="https://lms.griffith.edu.au/courses/27562/files/8353447?wrap=1"><strong>Exercise_Injury.csv</strong></a> <strong>(Task 3)</strong></p>
+</section>
+<section id="research-questions" class="level2">
+<h2 class="anchored" data-anchor-id="research-questions">Research Questions</h2>
+<ol type="1">
+<li>Do Brisbane and Geelong differ in their scoring patterns throughout the 2025 season?</li>
+<li>Do medication adherence patterns differ following a text-messaging reminder system rollout?</li>
+<li>Can we reduce our insurance costs by determining if injury occurrence independent of exercise training type in a gym?</li>
+</ol>
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Jamovi Reminder:</strong> Chi-square tests have key assumptions:</p>
+<p>1) Independence of observations (each observation counted once)</p>
+<p>2) Variables must be categorical (nominal or ordinal)</p>
+<p>3) All expected frequencies/counts ≥ 1 (in each cells in table), with at least 80% of expected frequencies/counts ≥ 5 (in each cells in table)</p>
+<ol start="4" type="1">
+<li>Adequate sample size (minimum 30 observations total)</li>
+</ol>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="refresher-understanding-chi-square-components" class="level2">
+<h2 class="anchored" data-anchor-id="refresher-understanding-chi-square-components">Refresher: Understanding Chi-Square Components</h2>
+<p>Your chi-square lecture slides can be found <a href="https://lms.griffith.edu.au/courses/27562/pages/f-tests-and-chi-square?module_item_id=846692">here</a> if helpful.</p>
+<section id="key-terms-review" class="level3">
+<h3 class="anchored" data-anchor-id="key-terms-review">Key Terms Review:</h3>
+<ul>
+<li><strong>χ² statistic</strong>: Measures how much observed frequencies deviate from expected frequencies</li>
+<li><strong>Expected frequencies</strong>: What we’d expect if variables were independent</li>
+<li><strong>Degrees of freedom</strong>: <em>df</em> = (rows-1) × (columns-1)</li>
+<li><strong>p-value</strong>: Probability of observing this pattern (or more extreme) if no real association exists</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Key Insight:</strong> The chi-square test tells us IF there’s an association between variables, but it doesn’t tell us WHERE the association is strongest. Today you’ll learn a new technique to identify which specific cells contribute most to the significant result!</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="160" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 159;"><span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>viewof studentName <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;strong&gt;Your Name:&lt;/strong&gt;`</span><span class="op">,</span></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter your name"</span></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>viewof studentID <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;strong&gt;Student ID:&lt;/strong&gt;`</span><span class="op">,</span></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter your student ID"</span></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="task-1---chi-square-test-of-homogeneity-brisbane-lions-vs-geelong-cats" class="level2">
+<h2 class="anchored" data-anchor-id="task-1---chi-square-test-of-homogeneity-brisbane-lions-vs-geelong-cats">Task 1 - Chi-Square Test of Homogeneity: Brisbane Lions vs Geelong Cats</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="\worksheet8_files\lions.jpg" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">AFL Grand Final</figcaption>
+</figure>
+</div>
+<section id="scenario-details" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-details">Scenario Details:</h3>
+<p><strong>Context</strong>: It’s Grand Final week! Brisbane Lions and Geelong Cats face off this weekend. You’ve been asked to analyse the season’s scoring patterns to identify key differences between the teams.</p>
+<blockquote class="blockquote">
+<p><em>“Your mate asks if he should bet Geelong or the Lions for the grand final. So you look to see if they differ in their proportion of goals, behinds, and no-score outcomes across the 2025 season?”</em></p>
+</blockquote>
+<p>You have data from the entire 2025 season:</p>
+<ul>
+<li><strong>Teams:</strong> Brisbane Lions, Geelong Cats</li>
+<li><strong>Scoring Outcomes:</strong> Goal (6 points), Behind (1 point), NoScore (0 points)</li>
+<li><strong>Sample:</strong> All scoring attempts from the 2025 season (1431 total observations)</li>
+</ul>
+</section>
+<section id="section-a-data-setup-and-visualisation" class="level3">
+<h3 class="anchored" data-anchor-id="section-a-data-setup-and-visualisation">Section A: Data Setup and Visualisation</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Jamovi Instructions for AFL Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Open Jamovi and load <code>AFL_GF_Preview.csv</code></li>
+<li>Navigate to <code>Frequencies</code> → <code>Contingency Tables</code> → <code>Independent Samples</code></li>
+<li>Drag <code>Team</code> to <code>Rows</code></li>
+<li>Drag <code>Outcome</code> to <code>Columns</code></li>
+<li>Under <code>Cells</code>, check:
+<ul>
+<li><code>Observed</code></li>
+<li><code>Expected</code></li>
+<li><code>Row %</code> (to see each team’s scoring pattern)</li>
+</ul></li>
+<li>Under <code>Post Hoc Tests</code>, check:
+<ul>
+<li><code>Standardized residuals (adjusted Pearson)</code></li>
+</ul></li>
+<li>Under <code>Plots</code>, check <code>Bar plot</code> with:
+<ul>
+<li>X-axis: <code>Columns</code></li>
+<li>Bar type: <code>Side by side</code></li>
+<li>Y-axis: <code>Counts</code></li>
+</ul></li>
+</ol>
+</div>
+</div>
+<p><strong>Record the observed frequencies:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="219" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 218;"><span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a>viewof lions_goals <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Brisbane Lions - Goals (n):"</span><span class="op">,</span></span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a>viewof lions_behinds <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Brisbane Lions - Behinds (n):"</span><span class="op">,</span></span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a>viewof lions_noscore <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Brisbane Lions - NoScore (n):"</span><span class="op">,</span></span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a>viewof cats_goals <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Geelong Cats - Goals (n):"</span><span class="op">,</span></span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a>viewof cats_behinds <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb2-244"><a href="#cb2-244" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Geelong Cats - Behinds (n):"</span><span class="op">,</span></span>
+<span id="cb2-245"><a href="#cb2-245" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-248"><a href="#cb2-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-249"><a href="#cb2-249" aria-hidden="true" tabindex="-1"></a>viewof cats_noscore <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Geelong Cats - NoScore (n):"</span><span class="op">,</span></span>
+<span id="cb2-251"><a href="#cb2-251" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb2-252"><a href="#cb2-252" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb2-253"><a href="#cb2-253" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section-b-chi-square-test-results" class="level3">
+<h3 class="anchored" data-anchor-id="section-b-chi-square-test-results">Section B: Chi-Square Test Results</h3>
+<p><strong>Record the test statistics:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="262" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 261;"><span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>viewof afl_chi <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"χ² statistic:"</span><span class="op">,</span></span>
+<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter chi-square value"</span></span>
+<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>viewof afl_df <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Degrees of freedom:"</span><span class="op">,</span></span>
+<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter df"</span></span>
+<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a>viewof afl_p <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"p-value:"</span><span class="op">,</span></span>
+<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.001</span><span class="op">,</span></span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter p-value"</span></span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>viewof afl_sig <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"Yes (p &lt; 0.05), we need a post-hoc test"</span><span class="op">,</span> <span class="st">"No (p ≥ 0.05)"</span>]<span class="op">,</span></span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Statistically significant?"</span>}</span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section-c-understanding-post-hoc-analysis-with-standardised-residuals" class="level3">
+<h3 class="anchored" data-anchor-id="section-c-understanding-post-hoc-analysis-with-standardised-residuals">Section C: Understanding Post-Hoc Analysis with Standardised Residuals</h3>
+<p>When your chi-square test is significant, you know there’s an association between variables, but which specific groups differ? This is where we need a technique similar to post-hoc tests in ANOVA.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+NEW CONCEPT: Standardised Residuals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>What are they?</strong> Standardised residuals tell us how much each cell deviates from what we’d expect if the variables were independent. Think of them sort of like z-scores for each cell in your contingency table.</p>
+<p><strong>How to interpret them:</strong></p>
+<ul>
+<li><strong>Greater than +2</strong>: This cell has significantly MORE cases than expected</li>
+<li><strong>Less than -2</strong>: This cell has significantly FEWER cases than expected</li>
+<li><strong>Between -2 and +2</strong>: This cell is about what we’d expect</li>
+</ul>
+<p><strong>Example:</strong> If Lions Goal has a standardised residual of +2.5, this means Brisbane scores significantly more goals than we’d expect if team and scoring outcome were unrelated.</p>
+<p>This is your <em>post-hoc analysis</em> for chi-square, it shows you WHERE the significant association is occurring!</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="319" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 318;"><span id="cb4-319"><a href="#cb4-319" aria-hidden="true" tabindex="-1"></a>viewof afl_q1 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb4-320"><a href="#cb4-320" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"1. Based on the standardised residuals from Jamovi, what is the key difference between the teams' scoring patterns?"</span><span class="op">,</span></span>
+<span id="cb4-321"><a href="#cb4-321" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Look for residuals &gt; |2| to identify significant differences..."</span><span class="op">,</span></span>
+<span id="cb4-322"><a href="#cb4-322" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">3</span></span>
+<span id="cb4-323"><a href="#cb4-323" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-324"><a href="#cb4-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-325"><a href="#cb4-325" aria-hidden="true" tabindex="-1"></a>viewof afl_q2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb4-326"><a href="#cb4-326" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"2. What strategic advice would you give your mate based on this analysis?"</span><span class="op">,</span></span>
+<span id="cb4-327"><a href="#cb4-327" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Consider what the scoring patterns reveal about each team's strengths and weaknesses..."</span><span class="op">,</span></span>
+<span id="cb4-328"><a href="#cb4-328" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">3</span></span>
+<span id="cb4-329"><a href="#cb4-329" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="task-2---chi-square-goodness-of-fit-medication-adherence" class="level2">
+<h2 class="anchored" data-anchor-id="task-2---chi-square-goodness-of-fit-medication-adherence">Task 2 - Chi-Square Goodness of Fit: Medication Adherence</h2>
+<section id="scenario-details-1" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-details-1">Scenario Details:</h3>
+<p><strong>Context</strong>: You’re analysing medication adherence at a community pharmacy, and the lead pharmacist asks:</p>
+<blockquote class="blockquote">
+<p><em>“Across Australia of the pharmacy customers who are prescribed chronic medications, 50% of patients are fully adherent, 30% partially adherent, and 20% non-adherent. After rolling out a new auto-alert text message system the state manager for Chemist Warehouse wants a report on if the system has changed these patterns in our customers. It is your job to check if our adherence rates differ from Australian norm?”</em></p>
+</blockquote>
+<p>You analyse 200 random patients on chronic medications:</p>
+<ul>
+<li><strong>Adherence Categories:</strong> Patients are catergoised as Fully Adherent if they take &gt;80% doses, Partially Adherent (50-79%), and Non-Adherent (&lt;50%).</li>
+<li><strong>Expected Distribution:</strong> 50% Full, 30% Partial, 20% Non-adherent (Australian norm)</li>
+<li><strong>Sample:</strong> 200 patients using who were using the new reminder system</li>
+<li><strong>Clinical significance:</strong> A 10% improvement in full adherence would justify continued system-wide implementation</li>
+</ul>
+</section>
+<section id="section-a-data-preparation---recoding-variables" class="level3">
+<h3 class="anchored" data-anchor-id="section-a-data-preparation---recoding-variables">Section A: Data Preparation - Recoding Variables</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data Recoding Instructions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Your data file contains numerical codes that need to be converted to meaningful labels:</p>
+<p><strong>In Jamovi:</strong></p>
+<p>1. Open <code>Medication_Adherence_Coded.csv</code></p>
+<p>2. Double-click on the variable name <code>Adherence_Category</code> in the data view</p>
+<p>3. In the variable properties panel that opens: - Change <code>Measure type</code> to <code>Nominal</code> - Under <code>Levels</code>, you’ll see the numbers 1, 2, 3 - Click on each number and add labels:</p>
+<ul>
+<li>1 → <code>Fully Adherent</code></li>
+<li>2 → <code>Partially Adherent</code></li>
+<li>3 → <code>Non-Adherent</code></li>
+</ul>
+<p>4. The data will now display the labels instead of numbers</p>
+</div>
+</div>
+</section>
+<section id="section-b-observed-vs-expected-frequencies" class="level3">
+<h3 class="anchored" data-anchor-id="section-b-observed-vs-expected-frequencies">Section B: Observed vs Expected Frequencies</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Jamovi Instructions for Goodness of Fit Test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>After recoding, navigate to <code>Frequencies</code> → <code>One Sample Proportion Tests</code> → <code>N Outcomes - χ² Goodness of fit</code></li>
+<li>Drag <code>Adherence_Category</code> to the <code>Variable</code> box</li>
+<li>Check the <code>Expected counts</code> box</li>
+<li>Under <code>Expected Proportions</code>, manually enter in each <code>Ratio</code> box:
+<ul>
+<li>Fully Adherent: 0.50</li>
+<li>Partially Adherent: 0.30</li>
+<li>Non-Adherent: 0.20</li>
+</ul></li>
+</ol>
+</div>
+</div>
+<p><strong>Record the observed frequencies and percentages:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="406" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 405;"><span id="cb5-406"><a href="#cb5-406" aria-hidden="true" tabindex="-1"></a>viewof obs_full <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-407"><a href="#cb5-407" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Fully Adherent - Observed (n):"</span><span class="op">,</span></span>
+<span id="cb5-408"><a href="#cb5-408" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-409"><a href="#cb5-409" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb5-410"><a href="#cb5-410" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-411"><a href="#cb5-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-412"><a href="#cb5-412" aria-hidden="true" tabindex="-1"></a>viewof obs_full_pct <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-413"><a href="#cb5-413" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Fully Adherent - Observed (%):"</span><span class="op">,</span></span>
+<span id="cb5-414"><a href="#cb5-414" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-415"><a href="#cb5-415" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span></span>
+<span id="cb5-416"><a href="#cb5-416" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter percentage"</span></span>
+<span id="cb5-417"><a href="#cb5-417" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-418"><a href="#cb5-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-419"><a href="#cb5-419" aria-hidden="true" tabindex="-1"></a>viewof exp_full <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-420"><a href="#cb5-420" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Fully Adherent - Expected (n):"</span><span class="op">,</span></span>
+<span id="cb5-421"><a href="#cb5-421" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-422"><a href="#cb5-422" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Should be 100 (50% of 200)"</span></span>
+<span id="cb5-423"><a href="#cb5-423" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-424"><a href="#cb5-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-425"><a href="#cb5-425" aria-hidden="true" tabindex="-1"></a>viewof obs_partial <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-426"><a href="#cb5-426" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Partially Adherent - Observed (n):"</span><span class="op">,</span></span>
+<span id="cb5-427"><a href="#cb5-427" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-428"><a href="#cb5-428" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb5-429"><a href="#cb5-429" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-430"><a href="#cb5-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-431"><a href="#cb5-431" aria-hidden="true" tabindex="-1"></a>viewof obs_partial_pct <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-432"><a href="#cb5-432" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Partially Adherent - Observed (%):"</span><span class="op">,</span></span>
+<span id="cb5-433"><a href="#cb5-433" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-434"><a href="#cb5-434" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span></span>
+<span id="cb5-435"><a href="#cb5-435" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter percentage"</span></span>
+<span id="cb5-436"><a href="#cb5-436" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-437"><a href="#cb5-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-438"><a href="#cb5-438" aria-hidden="true" tabindex="-1"></a>viewof exp_partial <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-439"><a href="#cb5-439" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Partially Adherent - Expected (n):"</span><span class="op">,</span></span>
+<span id="cb5-440"><a href="#cb5-440" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-441"><a href="#cb5-441" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Should be 60 (30% of 200)"</span></span>
+<span id="cb5-442"><a href="#cb5-442" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-443"><a href="#cb5-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-444"><a href="#cb5-444" aria-hidden="true" tabindex="-1"></a>viewof obs_non <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-445"><a href="#cb5-445" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Non-Adherent - Observed (n):"</span><span class="op">,</span></span>
+<span id="cb5-446"><a href="#cb5-446" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-447"><a href="#cb5-447" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb5-448"><a href="#cb5-448" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-449"><a href="#cb5-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-450"><a href="#cb5-450" aria-hidden="true" tabindex="-1"></a>viewof obs_non_pct <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-451"><a href="#cb5-451" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Non-Adherent - Observed (%):"</span><span class="op">,</span></span>
+<span id="cb5-452"><a href="#cb5-452" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-453"><a href="#cb5-453" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span></span>
+<span id="cb5-454"><a href="#cb5-454" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter percentage"</span></span>
+<span id="cb5-455"><a href="#cb5-455" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-456"><a href="#cb5-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-457"><a href="#cb5-457" aria-hidden="true" tabindex="-1"></a>viewof exp_non <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb5-458"><a href="#cb5-458" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Non-Adherent - Expected (n):"</span><span class="op">,</span></span>
+<span id="cb5-459"><a href="#cb5-459" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb5-460"><a href="#cb5-460" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Should be 40 (20% of 200)"</span></span>
+<span id="cb5-461"><a href="#cb5-461" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section-c-goodness-of-fit-test-results" class="level3">
+<h3 class="anchored" data-anchor-id="section-c-goodness-of-fit-test-results">Section C: Goodness of Fit Test Results</h3>
+<p><strong>Record the test statistics:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="470" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 469;"><span id="cb6-470"><a href="#cb6-470" aria-hidden="true" tabindex="-1"></a>viewof gof_chi <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb6-471"><a href="#cb6-471" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"χ² statistic:"</span><span class="op">,</span></span>
+<span id="cb6-472"><a href="#cb6-472" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb6-473"><a href="#cb6-473" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb6-474"><a href="#cb6-474" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter chi-square value"</span></span>
+<span id="cb6-475"><a href="#cb6-475" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-476"><a href="#cb6-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-477"><a href="#cb6-477" aria-hidden="true" tabindex="-1"></a>viewof gof_df <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb6-478"><a href="#cb6-478" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Degrees of freedom:"</span><span class="op">,</span></span>
+<span id="cb6-479"><a href="#cb6-479" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb6-480"><a href="#cb6-480" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter df (should be 2)"</span></span>
+<span id="cb6-481"><a href="#cb6-481" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-482"><a href="#cb6-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-483"><a href="#cb6-483" aria-hidden="true" tabindex="-1"></a>viewof gof_p <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb6-484"><a href="#cb6-484" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"p-value:"</span><span class="op">,</span></span>
+<span id="cb6-485"><a href="#cb6-485" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb6-486"><a href="#cb6-486" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.001</span><span class="op">,</span></span>
+<span id="cb6-487"><a href="#cb6-487" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter p-value"</span></span>
+<span id="cb6-488"><a href="#cb6-488" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-489"><a href="#cb6-489" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-490"><a href="#cb6-490" aria-hidden="true" tabindex="-1"></a>viewof gof_sig <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb6-491"><a href="#cb6-491" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"Yes (p &lt; 0.05)"</span><span class="op">,</span> <span class="st">"No (p ≥ 0.05)"</span>]<span class="op">,</span></span>
+<span id="cb6-492"><a href="#cb6-492" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Significant deviation from expected?"</span>}</span>
+<span id="cb6-493"><a href="#cb6-493" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section-d-clinical-interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="section-d-clinical-interpretation">Section D: Clinical Interpretation</h3>
+<p>For goodness of fit tests, focus on which categories show the largest differences between observed and expected frequencies.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="503" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 502;"><span id="cb7-503"><a href="#cb7-503" aria-hidden="true" tabindex="-1"></a>viewof largest_diff <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb7-504"><a href="#cb7-504" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"Fully Adherent"</span><span class="op">,</span> <span class="st">"Partially Adherent"</span><span class="op">,</span> <span class="st">"Non-Adherent"</span>]<span class="op">,</span></span>
+<span id="cb7-505"><a href="#cb7-505" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Which category shows the largest difference from expected?"</span>}</span>
+<span id="cb7-506"><a href="#cb7-506" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-507"><a href="#cb7-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-508"><a href="#cb7-508" aria-hidden="true" tabindex="-1"></a>viewof direction <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb7-509"><a href="#cb7-509" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"More than expected"</span><span class="op">,</span> <span class="st">"Less than expected"</span>]<span class="op">,</span></span>
+<span id="cb7-510"><a href="#cb7-510" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Is this category higher or lower than expected?"</span>}</span>
+<span id="cb7-511"><a href="#cb7-511" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-512"><a href="#cb7-512" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-513"><a href="#cb7-513" aria-hidden="true" tabindex="-1"></a>viewof improvement <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb7-514"><a href="#cb7-514" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Change in full adherence rate (observed % - expected 50%):"</span><span class="op">,</span></span>
+<span id="cb7-515"><a href="#cb7-515" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb7-516"><a href="#cb7-516" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span></span>
+<span id="cb7-517"><a href="#cb7-517" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Calculate difference"</span></span>
+<span id="cb7-518"><a href="#cb7-518" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-519"><a href="#cb7-519" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-520"><a href="#cb7-520" aria-hidden="true" tabindex="-1"></a>viewof clinically_meaningful <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb7-521"><a href="#cb7-521" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"Yes (≥10% improvement)"</span><span class="op">,</span> <span class="st">"No (&lt;10% improvement)"</span><span class="op">,</span> <span class="st">"Decrease (worse than expected)"</span>]<span class="op">,</span></span>
+<span id="cb7-522"><a href="#cb7-522" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Is the change in full adherence clinically meaningful?"</span>}</span>
+<span id="cb7-523"><a href="#cb7-523" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-524"><a href="#cb7-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-525"><a href="#cb7-525" aria-hidden="true" tabindex="-1"></a>viewof gof_q1 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb7-526"><a href="#cb7-526" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"1. Does the reminder system improve medication adherence? Explain using the data."</span><span class="op">,</span></span>
+<span id="cb7-527"><a href="#cb7-527" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Consider which categories increased or decreased compared to industry norms..."</span><span class="op">,</span></span>
+<span id="cb7-528"><a href="#cb7-528" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">3</span></span>
+<span id="cb7-529"><a href="#cb7-529" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-530"><a href="#cb7-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-531"><a href="#cb7-531" aria-hidden="true" tabindex="-1"></a>viewof gof_q2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb7-532"><a href="#cb7-532" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"2. Should the pharmacy implement this system across all locations? Justify with both statistical significance and practical impact."</span><span class="op">,</span></span>
+<span id="cb7-533"><a href="#cb7-533" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Consider the p-value, actual percentage changes, and clinical meaningfulness..."</span><span class="op">,</span></span>
+<span id="cb7-534"><a href="#cb7-534" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">3</span></span>
+<span id="cb7-535"><a href="#cb7-535" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="task-3---chi-square-test-of-independence-exercise-type-and-injury" class="level2">
+<h2 class="anchored" data-anchor-id="task-3---chi-square-test-of-independence-exercise-type-and-injury">Task 3 - Chi-Square Test of Independence: Exercise Type and Injury</h2>
+<section id="scenario-details-2" class="level3">
+<h3 class="anchored" data-anchor-id="scenario-details-2">Scenario Details:</h3>
+<p><strong>Context</strong>: You manage a local Goodlife Health Club, and the risk management team asks:</p>
+<blockquote class="blockquote">
+<p><em>“We offer circuit resistance training, high-intensity interval training (HIIT), and yoga programmes. Insurance premiums are getting very expensive. If we can manage injury rates better we can get our premiums reduced. So we need to know if certain programmes have higher injury rates so we can put in administrative controls where needed. Can you analyse our injury data from the past year?”</em></p>
+</blockquote>
+<p>You collected data from 300 members over 12 months:</p>
+<ul>
+<li><strong>Exercise Types:</strong> Resistance Training, HIIT, Yoga</li>
+<li><strong>Injury Status:</strong> Injured (required medical attention) vs No Injury</li>
+<li><strong>Sample:</strong> 300 members at random</li>
+<li><strong>Practical significance:</strong> We need to get the overall injury rates below 20% for a insurance premium reduction</li>
+</ul>
+</section>
+<section id="section-a-data-preparation---recoding-variables-1" class="level3">
+<h3 class="anchored" data-anchor-id="section-a-data-preparation---recoding-variables-1">Section A: Data Preparation - Recoding Variables</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data Recoding Instructions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Your data file contains numerical codes that need to be converted to meaningful labels:</p>
+<p><strong>In Jamovi:</strong></p>
+<p>1. Open <code>Exercise_Injury.csv</code></p>
+<p>2. For <code>Exercise_Type</code> variable:</p>
+<p>- Double-click on the variable name</p>
+<p>- Change <code>Measure type</code> to <code>Nominal</code></p>
+<p>- Under <code>Levels</code>, add labels:</p>
+<ul>
+<li>1 → <code>Resistance Training</code></li>
+<li>2 → <code>HIIT</code></li>
+<li>3 → Yoga</li>
+</ul>
+<p>3. For <code>Injury_Status</code> variable:</p>
+<p>Double-click on the variable name</p>
+<p>Change <code>Measure type</code> to <code>Nominal</code></p>
+<p>Under <code>Levels</code>, add labels:</p>
+<ul>
+<li>0 → No Injury</li>
+<li>1 → Injured</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="section-b-contingency-table-and-test-results" class="level3">
+<h3 class="anchored" data-anchor-id="section-b-contingency-table-and-test-results">Section B: Contingency Table and Test Results</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Jamovi Instructions for Contingency Tables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>After recoding, navigate to <code>Frequencies</code> → <code>Contingency Tables</code> → <code>Independent Samples</code></li>
+<li>Drag <code>Exercise_Type</code> to <code>Rows</code></li>
+<li>Drag <code>Injury_Status</code> to <code>Columns</code></li>
+<li>Under <code>Cells</code>, check:
+<ul>
+<li><code>Observed</code></li>
+<li><code>Expected</code></li>
+<li><code>Row %</code></li>
+<li><code>Standardised residuals</code></li>
+</ul></li>
+<li>Under <code>Statistics</code>, check <code>χ²</code> and <code>Fisher's exact test</code></li>
+</ol>
+</div>
+</div>
+<p><strong>Record the observed frequencies:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb8" data-startfrom="619" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 618;"><span id="cb8-619"><a href="#cb8-619" aria-hidden="true" tabindex="-1"></a>viewof resist_injured <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-620"><a href="#cb8-620" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Resistance Training - Injured (n):"</span><span class="op">,</span></span>
+<span id="cb8-621"><a href="#cb8-621" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-622"><a href="#cb8-622" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb8-623"><a href="#cb8-623" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-624"><a href="#cb8-624" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-625"><a href="#cb8-625" aria-hidden="true" tabindex="-1"></a>viewof resist_no_injury <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-626"><a href="#cb8-626" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Resistance Training - No Injury (n):"</span><span class="op">,</span></span>
+<span id="cb8-627"><a href="#cb8-627" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-628"><a href="#cb8-628" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb8-629"><a href="#cb8-629" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-630"><a href="#cb8-630" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-631"><a href="#cb8-631" aria-hidden="true" tabindex="-1"></a>viewof resist_injury_pct <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-632"><a href="#cb8-632" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Resistance Training - Injury Rate (%):"</span><span class="op">,</span></span>
+<span id="cb8-633"><a href="#cb8-633" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-634"><a href="#cb8-634" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span></span>
+<span id="cb8-635"><a href="#cb8-635" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter percentage"</span></span>
+<span id="cb8-636"><a href="#cb8-636" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-637"><a href="#cb8-637" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-638"><a href="#cb8-638" aria-hidden="true" tabindex="-1"></a>viewof hiit_injured <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-639"><a href="#cb8-639" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"HIIT - Injured (n):"</span><span class="op">,</span></span>
+<span id="cb8-640"><a href="#cb8-640" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-641"><a href="#cb8-641" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb8-642"><a href="#cb8-642" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-643"><a href="#cb8-643" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-644"><a href="#cb8-644" aria-hidden="true" tabindex="-1"></a>viewof hiit_no_injury <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-645"><a href="#cb8-645" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"HIIT - No Injury (n):"</span><span class="op">,</span></span>
+<span id="cb8-646"><a href="#cb8-646" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-647"><a href="#cb8-647" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb8-648"><a href="#cb8-648" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-649"><a href="#cb8-649" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-650"><a href="#cb8-650" aria-hidden="true" tabindex="-1"></a>viewof hiit_injury_pct <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-651"><a href="#cb8-651" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"HIIT - Injury Rate (%):"</span><span class="op">,</span></span>
+<span id="cb8-652"><a href="#cb8-652" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-653"><a href="#cb8-653" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span></span>
+<span id="cb8-654"><a href="#cb8-654" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter percentage"</span></span>
+<span id="cb8-655"><a href="#cb8-655" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-656"><a href="#cb8-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-657"><a href="#cb8-657" aria-hidden="true" tabindex="-1"></a>viewof yoga_injured <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-658"><a href="#cb8-658" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Yoga - Injured (n):"</span><span class="op">,</span></span>
+<span id="cb8-659"><a href="#cb8-659" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-660"><a href="#cb8-660" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb8-661"><a href="#cb8-661" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-662"><a href="#cb8-662" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-663"><a href="#cb8-663" aria-hidden="true" tabindex="-1"></a>viewof yoga_no_injury <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-664"><a href="#cb8-664" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Yoga - No Injury (n):"</span><span class="op">,</span></span>
+<span id="cb8-665"><a href="#cb8-665" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-666"><a href="#cb8-666" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter count"</span></span>
+<span id="cb8-667"><a href="#cb8-667" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-668"><a href="#cb8-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-669"><a href="#cb8-669" aria-hidden="true" tabindex="-1"></a>viewof yoga_injury_pct <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb8-670"><a href="#cb8-670" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Yoga - Injury Rate (%):"</span><span class="op">,</span></span>
+<span id="cb8-671"><a href="#cb8-671" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb8-672"><a href="#cb8-672" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.1</span><span class="op">,</span></span>
+<span id="cb8-673"><a href="#cb8-673" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter percentage"</span></span>
+<span id="cb8-674"><a href="#cb8-674" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<p><strong>Record the chi-square test statistics:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb9" data-startfrom="681" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 680;"><span id="cb9-681"><a href="#cb9-681" aria-hidden="true" tabindex="-1"></a>viewof chi_square_stat <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb9-682"><a href="#cb9-682" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"χ² statistic:"</span><span class="op">,</span></span>
+<span id="cb9-683"><a href="#cb9-683" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb9-684"><a href="#cb9-684" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb9-685"><a href="#cb9-685" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter chi-square value"</span></span>
+<span id="cb9-686"><a href="#cb9-686" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-687"><a href="#cb9-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-688"><a href="#cb9-688" aria-hidden="true" tabindex="-1"></a>viewof chi_df <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb9-689"><a href="#cb9-689" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Degrees of freedom:"</span><span class="op">,</span></span>
+<span id="cb9-690"><a href="#cb9-690" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb9-691"><a href="#cb9-691" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter df"</span></span>
+<span id="cb9-692"><a href="#cb9-692" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-693"><a href="#cb9-693" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-694"><a href="#cb9-694" aria-hidden="true" tabindex="-1"></a>viewof chi_p <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb9-695"><a href="#cb9-695" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"p-value:"</span><span class="op">,</span></span>
+<span id="cb9-696"><a href="#cb9-696" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb9-697"><a href="#cb9-697" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.001</span><span class="op">,</span></span>
+<span id="cb9-698"><a href="#cb9-698" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter p-value"</span></span>
+<span id="cb9-699"><a href="#cb9-699" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-700"><a href="#cb9-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-701"><a href="#cb9-701" aria-hidden="true" tabindex="-1"></a>viewof chi_sig <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb9-702"><a href="#cb9-702" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"Yes (p &lt; 0.05)"</span><span class="op">,</span> <span class="st">"No (p ≥ 0.05)"</span>]<span class="op">,</span></span>
+<span id="cb9-703"><a href="#cb9-703" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Statistically significant?"</span>}</span>
+<span id="cb9-704"><a href="#cb9-704" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-9-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-9-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-9-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-9-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="section-d-post-hoc-analysis-with-standardised-residuals" class="level3">
+<h3 class="anchored" data-anchor-id="section-d-post-hoc-analysis-with-standardised-residuals">Section D: Post-Hoc Analysis with Standardised Residuals</h3>
+<p><strong>Record standardised residuals for each cell:</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="713" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 712;"><span id="cb10-713"><a href="#cb10-713" aria-hidden="true" tabindex="-1"></a>viewof resid_resist_inj <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb10-714"><a href="#cb10-714" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Resistance-Injured residual:"</span><span class="op">,</span></span>
+<span id="cb10-715"><a href="#cb10-715" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb10-716"><a href="#cb10-716" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb10-717"><a href="#cb10-717" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter standardised residual"</span></span>
+<span id="cb10-718"><a href="#cb10-718" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-719"><a href="#cb10-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-720"><a href="#cb10-720" aria-hidden="true" tabindex="-1"></a>viewof resid_resist_no <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb10-721"><a href="#cb10-721" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Resistance-No Injury residual:"</span><span class="op">,</span></span>
+<span id="cb10-722"><a href="#cb10-722" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb10-723"><a href="#cb10-723" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb10-724"><a href="#cb10-724" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter standardised residual"</span></span>
+<span id="cb10-725"><a href="#cb10-725" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-726"><a href="#cb10-726" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-727"><a href="#cb10-727" aria-hidden="true" tabindex="-1"></a>viewof resist_pattern <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb10-728"><a href="#cb10-728" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"More injuries than expected (&gt;+2)"</span><span class="op">,</span> <span class="st">"Fewer injuries than expected (&lt;-2)"</span><span class="op">,</span> <span class="st">"As expected (-2 to +2)"</span>]<span class="op">,</span></span>
+<span id="cb10-729"><a href="#cb10-729" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Resistance pattern:"</span>}</span>
+<span id="cb10-730"><a href="#cb10-730" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-731"><a href="#cb10-731" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-732"><a href="#cb10-732" aria-hidden="true" tabindex="-1"></a>viewof resid_hiit_inj <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb10-733"><a href="#cb10-733" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"HIIT-Injured residual:"</span><span class="op">,</span></span>
+<span id="cb10-734"><a href="#cb10-734" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb10-735"><a href="#cb10-735" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb10-736"><a href="#cb10-736" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter standardised residual"</span></span>
+<span id="cb10-737"><a href="#cb10-737" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-738"><a href="#cb10-738" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-739"><a href="#cb10-739" aria-hidden="true" tabindex="-1"></a>viewof resid_hiit_no <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb10-740"><a href="#cb10-740" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"HIIT-No Injury residual:"</span><span class="op">,</span></span>
+<span id="cb10-741"><a href="#cb10-741" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb10-742"><a href="#cb10-742" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb10-743"><a href="#cb10-743" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter standardised residual"</span></span>
+<span id="cb10-744"><a href="#cb10-744" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-745"><a href="#cb10-745" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-746"><a href="#cb10-746" aria-hidden="true" tabindex="-1"></a>viewof hiit_pattern <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb10-747"><a href="#cb10-747" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"More injuries than expected (&gt;+2)"</span><span class="op">,</span> <span class="st">"Fewer injuries than expected (&lt;-2)"</span><span class="op">,</span> <span class="st">"As expected (-2 to +2)"</span>]<span class="op">,</span></span>
+<span id="cb10-748"><a href="#cb10-748" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"HIIT pattern:"</span>}</span>
+<span id="cb10-749"><a href="#cb10-749" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-750"><a href="#cb10-750" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-751"><a href="#cb10-751" aria-hidden="true" tabindex="-1"></a>viewof resid_yoga_inj <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb10-752"><a href="#cb10-752" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Yoga-Injured residual:"</span><span class="op">,</span></span>
+<span id="cb10-753"><a href="#cb10-753" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb10-754"><a href="#cb10-754" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb10-755"><a href="#cb10-755" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter standardised residual"</span></span>
+<span id="cb10-756"><a href="#cb10-756" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-757"><a href="#cb10-757" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-758"><a href="#cb10-758" aria-hidden="true" tabindex="-1"></a>viewof resid_yoga_no <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>({</span>
+<span id="cb10-759"><a href="#cb10-759" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Yoga-No Injury residual:"</span><span class="op">,</span></span>
+<span id="cb10-760"><a href="#cb10-760" aria-hidden="true" tabindex="-1"></a>  <span class="dt">type</span><span class="op">:</span> <span class="st">"number"</span><span class="op">,</span></span>
+<span id="cb10-761"><a href="#cb10-761" aria-hidden="true" tabindex="-1"></a>  <span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span></span>
+<span id="cb10-762"><a href="#cb10-762" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Enter standardised residual"</span></span>
+<span id="cb10-763"><a href="#cb10-763" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-764"><a href="#cb10-764" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-765"><a href="#cb10-765" aria-hidden="true" tabindex="-1"></a>viewof yoga_pattern <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(</span>
+<span id="cb10-766"><a href="#cb10-766" aria-hidden="true" tabindex="-1"></a>  [<span class="st">""</span><span class="op">,</span> <span class="st">"More injuries than expected (&gt;+2)"</span><span class="op">,</span> <span class="st">"Fewer injuries than expected (&lt;-2)"</span><span class="op">,</span> <span class="st">"As expected (-2 to +2)"</span>]<span class="op">,</span></span>
+<span id="cb10-767"><a href="#cb10-767" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">label</span><span class="op">:</span> <span class="st">"Yoga pattern:"</span>}</span>
+<span id="cb10-768"><a href="#cb10-768" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretation-questions" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-questions">Interpretation Questions:</h3>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="775" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 774;"><span id="cb11-775"><a href="#cb11-775" aria-hidden="true" tabindex="-1"></a>viewof chi_q1 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb11-776"><a href="#cb11-776" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"1. Which exercise type(s) have injury rates that differ significantly from expected? How do you know?"</span><span class="op">,</span></span>
+<span id="cb11-777"><a href="#cb11-777" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Consider the standardised residuals and what they tell you..."</span><span class="op">,</span></span>
+<span id="cb11-778"><a href="#cb11-778" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">3</span></span>
+<span id="cb11-779"><a href="#cb11-779" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb11-780"><a href="#cb11-780" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-781"><a href="#cb11-781" aria-hidden="true" tabindex="-1"></a>viewof chi_q2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb11-782"><a href="#cb11-782" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"2. Based on the actual percentages AND the standardised residuals, what would you tell the insurance company?"</span><span class="op">,</span></span>
+<span id="cb11-783"><a href="#cb11-783" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Consider both the raw injury rates and which differences are statistically meaningful..."</span><span class="op">,</span></span>
+<span id="cb11-784"><a href="#cb11-784" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">3</span></span>
+<span id="cb11-785"><a href="#cb11-785" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb11-786"><a href="#cb11-786" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-787"><a href="#cb11-787" aria-hidden="true" tabindex="-1"></a>viewof chi_q3 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb11-788"><a href="#cb11-788" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"3. If the gym wants to reduce overall injury rates, which programme needs the most attention and why?"</span><span class="op">,</span></span>
+<span id="cb11-789"><a href="#cb11-789" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Think about where the problem actually lies based on your analysis..."</span><span class="op">,</span></span>
+<span id="cb11-790"><a href="#cb11-790" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">3</span></span>
+<span id="cb11-791"><a href="#cb11-791" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-11-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-11-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-11-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="task-4---interpreting-and-reporting-chi-square-results-do-at-home" class="level2">
+<h2 class="anchored" data-anchor-id="task-4---interpreting-and-reporting-chi-square-results-do-at-home">Task 4 - Interpreting and Reporting Chi-Square Results (Do at Home)</h2>
+<section id="the-data" class="level3">
+<h3 class="anchored" data-anchor-id="the-data">The Data</h3>
+<p><strong>Study Context:</strong> A study examining whether caffeine consumption patterns differ between morning and evening exercisers.</p>
+<p><strong>Observed Frequencies (counts):</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 18%">
+<col style="width: 29%">
+<col style="width: 22%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Exercise Time</th>
+<th>No Caffeine</th>
+<th>Moderate (1-2 cups)</th>
+<th>High (3+ cups)</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Morning</td>
+<td>15</td>
+<td>45</td>
+<td>40</td>
+<td>100</td>
+</tr>
+<tr class="even">
+<td>Evening</td>
+<td>35</td>
+<td>40</td>
+<td>25</td>
+<td>100</td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td>50</td>
+<td>85</td>
+<td>65</td>
+<td>200</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Calculated percentages within each exercise time group:</strong> - Morning exercisers: 15% no caffeine, 45% moderate, 40% high - Evening exercisers: 35% no caffeine, 40% moderate, 25% high</p>
+<p><strong>Test Results:</strong> - χ²(2) = 12.84, p = 0.002</p>
+</section>
+<section id="your-task" class="level3">
+<h3 class="anchored" data-anchor-id="your-task">Your Task</h3>
+<p>Write a comprehensive interpretation that includes:</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="822" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 821;"><span id="cb12-822"><a href="#cb12-822" aria-hidden="true" tabindex="-1"></a>viewof comprehensive_interpretation <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">textarea</span>({</span>
+<span id="cb12-823"><a href="#cb12-823" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Write a complete interpretation including: (1) A formal results statement with statistics, (2) What this means practically for exercise and caffeine recommendations, and (3) One key limitation of this analysis:"</span><span class="op">,</span></span>
+<span id="cb12-824"><a href="#cb12-824" aria-hidden="true" tabindex="-1"></a>  <span class="dt">placeholder</span><span class="op">:</span> <span class="st">"Address all three components in your response..."</span><span class="op">,</span></span>
+<span id="cb12-825"><a href="#cb12-825" aria-hidden="true" tabindex="-1"></a>  <span class="dt">rows</span><span class="op">:</span> <span class="dv">8</span></span>
+<span id="cb12-826"><a href="#cb12-826" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-12" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</section>
+<section id="expert-interpretation-for-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="expert-interpretation-for-comparison">Expert Interpretation for Comparison:</h3>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb13" data-startfrom="833" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 832;"><span id="cb13-833"><a href="#cb13-833" aria-hidden="true" tabindex="-1"></a>viewof showExpertChi <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">toggle</span>({<span class="dt">label</span><span class="op">:</span> <span class="st">"🔍 Show Expert Interpretation"</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="kw">false</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-13" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb14" data-startfrom="838" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 837;"><span id="cb14-838"><a href="#cb14-838" aria-hidden="true" tabindex="-1"></a>showExpertChi <span class="op">?</span> <span class="fu">html</span><span class="vs">`&lt;div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3; margin: 15px 0;"&gt;</span></span>
+<span id="cb14-839"><a href="#cb14-839" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;strong&gt;Expert Comprehensive Interpretation:&lt;/strong&gt;&lt;br&gt;&lt;br&gt;</span></span>
+<span id="cb14-840"><a href="#cb14-840" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-841"><a href="#cb14-841" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;strong&gt;(1) First paragraph of a Discussion should be your key results with context:&lt;/strong&gt;&lt;br&gt;</span></span>
+<span id="cb14-842"><a href="#cb14-842" aria-hidden="true" tabindex="-1"></a><span class="vs">A chi-square test of independence revealed a significant association between exercise timing and caffeine consumption patterns, χ²(2) = 12.84, p = 0.002. Evening exercisers were more likely to avoid caffeine entirely (35% vs 15% for morning exercisers) and less likely to consume high amounts (25% vs 40%). Moderate consumption showed similar proportions across both groups (45% morning, 40% evening).&lt;br&gt;&lt;br&gt;</span></span>
+<span id="cb14-843"><a href="#cb14-843" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-844"><a href="#cb14-844" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;strong&gt;(2) Second (and third) paragraph should bring in some practical implications and position the results with wider research:&lt;/strong&gt;&lt;br&gt;</span></span>
+<span id="cb14-845"><a href="#cb14-845" aria-hidden="true" tabindex="-1"></a><span class="vs">These findings suggest exercise professionals should tailor caffeine recommendations based on workout timing. Morning exercisers may benefit from moderate-to-high caffeine intake for performance enhancement without sleep concerns. Evening exercisers should be counselled about caffeine's 5-6 hour half-life and potential sleep disruption (Good spot for a reference of wider literature). The 25% of evening exercisers still consuming high amounts of caffeine may particularly benefit from education about how this could impair recovery through poor sleep quality. Practitioners might recommend switching to morning workouts for those who want to maintain high caffeine intake, or transitioning to decaffeinated alternatives after 2pm for committed evening exercisers.&lt;br&gt;&lt;br&gt;</span></span>
+<span id="cb14-846"><a href="#cb14-846" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-847"><a href="#cb14-847" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;strong&gt;(3) Optional (space allowing) a limitation of the design, analysis and/or future directions on the back of your paper can be before the conclusion paragraph:&lt;/strong&gt;&lt;br&gt;</span></span>
+<span id="cb14-848"><a href="#cb14-848" aria-hidden="true" tabindex="-1"></a><span class="vs">Chi-square tests only reveal associations, not causation. We cannot determine whether caffeine-sensitive individuals choose evening workouts to accommodate their lower caffeine tolerance, or whether evening exercisers reduce caffeine intake due to sleep concerns. Additionally, converting continuous data to categories loses important information—someone drinking 3 cups differs meaningfully from someone drinking 6+ cups, yet both are classified identically as 'high consumption.'</span></span>
+<span id="cb14-849"><a href="#cb14-849" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-850"><a href="#cb14-850" aria-hidden="true" tabindex="-1"></a><span class="vs">*Personally the critique of the analysis method is not the best for the assingment I would be relying on the study design (what other variables would have helped your study for instance). &lt;/div&gt;`</span> <span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;p style="color: #666; font-style: italic;"&gt;Click the toggle above to reveal the expert interpretation after completing your own response.&lt;/p&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-14" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="summary-and-key-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="summary-and-key-takeaways">Summary and Key Takeaways</h2>
+<p>Based on your analyses, you should now understand:</p>
+<p><strong>Chi-Square Test of Homogeneity</strong>: Compares whether different populations/groups have the same distribution for a categorical variable. Tests if separate groups show similar patterns. Example we did: Do Brisbane Lions and Geelong Cats have the same distribution of scoring outcomes?</p>
+<p><strong>Chi-Square Goodness of Fit</strong>: Compares observed frequencies in a single sample to expected/theoretical distributions. Tests whether your sample follows population norms or a hypothesized pattern. Example we did: Does our pharmacy’s adherence pattern (actual) match industry standards (expected 50%/30%/20%)?</p>
+<p><strong>Chi-Square Test of Independence</strong>: Examines whether two categorical variables are related within a single population. Tests if knowing one variable helps predict the other. Example er did: Is exercise type associated with injury status among gym members?</p>
+<p><strong>Standardised Residuals</strong>: Your key tool for understanding WHERE differences occur in chi-square tests. Values &gt; |2| indicate cells that deviate significantly from what we’d expect if there was no association.</p>
+<p><strong>Practical/Clinical Context</strong>: A statistically significant chi-square doesn’t always mean clinically important differences. Consider absolute percentage differences and practical implications.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Remember:</strong> Chi-square tells us IF variables are associated. Standardised residuals tell us WHERE the association occurs. Practical/clinical judgment determines IF IT MATTERS in practice.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="save-your-work" class="level2">
+<h2 class="anchored" data-anchor-id="save-your-work">Save Your Work</h2>
+<p>Click the buttons below to preview or download all your responses as a clean HTML summary:</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb15" data-startfrom="900" data-source-offset="-59"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 899;"><span id="cb15-900"><a href="#cb15-900" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">buildChiSquareSummaryHTML</span>() {</span>
+<span id="cb15-901"><a href="#cb15-901" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> esc <span class="op">=</span> (s) <span class="kw">=&gt;</span> (s <span class="op">??</span> <span class="st">''</span>)<span class="op">.</span><span class="fu">toString</span>()</span>
+<span id="cb15-902"><a href="#cb15-902" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">replace</span>(<span class="ss">/&amp;/g</span><span class="op">,</span><span class="st">'&amp;amp;'</span>)<span class="op">.</span><span class="fu">replace</span>(<span class="ss">/&lt;/g</span><span class="op">,</span><span class="st">'&amp;lt;'</span>)<span class="op">.</span><span class="fu">replace</span>(<span class="op">/&gt;/</span>g<span class="op">,</span><span class="st">'&amp;gt;'</span>)<span class="op">;</span></span>
+<span id="cb15-903"><a href="#cb15-903" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-904"><a href="#cb15-904" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> safe <span class="op">=</span> (x) <span class="kw">=&gt;</span> x <span class="op">&amp;&amp;</span> x<span class="op">.</span><span class="at">length</span> <span class="op">!==</span> <span class="dv">0</span> <span class="op">?</span> x <span class="op">:</span> <span class="st">'—'</span><span class="op">;</span></span>
+<span id="cb15-905"><a href="#cb15-905" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-906"><a href="#cb15-906" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> today <span class="op">=</span> <span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">toLocaleDateString</span>()<span class="op">;</span></span>
+<span id="cb15-907"><a href="#cb15-907" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> name <span class="op">=</span> (studentName <span class="op">||</span> <span class="st">''</span>)<span class="op">.</span><span class="fu">toString</span>()<span class="op">.</span><span class="fu">trim</span>()<span class="op">;</span></span>
+<span id="cb15-908"><a href="#cb15-908" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> id <span class="op">=</span> (studentID <span class="op">||</span> <span class="st">''</span>)<span class="op">.</span><span class="fu">toString</span>()<span class="op">.</span><span class="fu">trim</span>()<span class="op">;</span></span>
+<span id="cb15-909"><a href="#cb15-909" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-910"><a href="#cb15-910" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="vs">`&lt;!doctype html&gt;</span></span>
+<span id="cb15-911"><a href="#cb15-911" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;html&gt;</span></span>
+<span id="cb15-912"><a href="#cb15-912" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;head&gt;</span></span>
+<span id="cb15-913"><a href="#cb15-913" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;meta charset="utf-8"&gt;</span></span>
+<span id="cb15-914"><a href="#cb15-914" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;title&gt;Workshop 8 Summary — </span><span class="sc">${</span><span class="fu">esc</span>(name <span class="op">||</span> <span class="st">'Student'</span>)<span class="sc">}</span><span class="vs">&lt;/title&gt;</span></span>
+<span id="cb15-915"><a href="#cb15-915" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;style&gt;</span></span>
+<span id="cb15-916"><a href="#cb15-916" aria-hidden="true" tabindex="-1"></a><span class="vs">  :root { --ink:#111; --muted:#666; --band:#f6f8fa; }</span></span>
+<span id="cb15-917"><a href="#cb15-917" aria-hidden="true" tabindex="-1"></a><span class="vs">  * { box-sizing:border-box }</span></span>
+<span id="cb15-918"><a href="#cb15-918" aria-hidden="true" tabindex="-1"></a><span class="vs">  body { font-family: system-ui, -apple-system, sans-serif; color:var(--ink); margin:32px; line-height:1.5 }</span></span>
+<span id="cb15-919"><a href="#cb15-919" aria-hidden="true" tabindex="-1"></a><span class="vs">  header { border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:24px }</span></span>
+<span id="cb15-920"><a href="#cb15-920" aria-hidden="true" tabindex="-1"></a><span class="vs">  h1 { margin:0 0 6px; font-size:1.6rem }</span></span>
+<span id="cb15-921"><a href="#cb15-921" aria-hidden="true" tabindex="-1"></a><span class="vs">  .meta { color:var(--muted); font-size:0.95rem }</span></span>
+<span id="cb15-922"><a href="#cb15-922" aria-hidden="true" tabindex="-1"></a><span class="vs">  h2 { margin-top:28px; border-bottom:1px solid #eee; padding-bottom:6px; font-size:1.2rem }</span></span>
+<span id="cb15-923"><a href="#cb15-923" aria-hidden="true" tabindex="-1"></a><span class="vs">  h3 { margin-top:20px; font-size:1.1rem; color:#333 }</span></span>
+<span id="cb15-924"><a href="#cb15-924" aria-hidden="true" tabindex="-1"></a><span class="vs">  table { border-collapse:collapse; width:100%; margin:10px 0 16px; font-size:0.95rem }</span></span>
+<span id="cb15-925"><a href="#cb15-925" aria-hidden="true" tabindex="-1"></a><span class="vs">  th, td { border:1px solid #ddd; padding:8px 10px; vertical-align:top }</span></span>
+<span id="cb15-926"><a href="#cb15-926" aria-hidden="true" tabindex="-1"></a><span class="vs">  th { background:var(--band); text-align:left }</span></span>
+<span id="cb15-927"><a href="#cb15-927" aria-hidden="true" tabindex="-1"></a><span class="vs">  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px }</span></span>
+<span id="cb15-928"><a href="#cb15-928" aria-hidden="true" tabindex="-1"></a><span class="vs">  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px }</span></span>
+<span id="cb15-929"><a href="#cb15-929" aria-hidden="true" tabindex="-1"></a><span class="vs">  .box { background:var(--band); padding:12px; border-radius:8px }</span></span>
+<span id="cb15-930"><a href="#cb15-930" aria-hidden="true" tabindex="-1"></a><span class="vs">  .small { color:var(--muted); font-size:0.9rem }</span></span>
+<span id="cb15-931"><a href="#cb15-931" aria-hidden="true" tabindex="-1"></a><span class="vs">  .highlight { background:#e3f2fd; padding:12px; border-radius:8px; margin:10px 0 }</span></span>
+<span id="cb15-932"><a href="#cb15-932" aria-hidden="true" tabindex="-1"></a><span class="vs">  @media print { body { margin:0.8in } }</span></span>
+<span id="cb15-933"><a href="#cb15-933" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/style&gt;</span></span>
+<span id="cb15-934"><a href="#cb15-934" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/head&gt;</span></span>
+<span id="cb15-935"><a href="#cb15-935" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;body&gt;</span></span>
+<span id="cb15-936"><a href="#cb15-936" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;header&gt;</span></span>
+<span id="cb15-937"><a href="#cb15-937" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;h1&gt;Workshop 8 — Chi-Square Analysis Summary&lt;/h1&gt;</span></span>
+<span id="cb15-938"><a href="#cb15-938" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;div class="meta"&gt;</span></span>
+<span id="cb15-939"><a href="#cb15-939" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;strong&gt;Name:&lt;/strong&gt; </span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(name))<span class="sc">}</span><span class="vs"> &amp;nbsp;|&amp;nbsp;</span></span>
+<span id="cb15-940"><a href="#cb15-940" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;strong&gt;Student ID:&lt;/strong&gt; </span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(id))<span class="sc">}</span><span class="vs"> &amp;nbsp;|&amp;nbsp;</span></span>
+<span id="cb15-941"><a href="#cb15-941" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;strong&gt;Date:&lt;/strong&gt; </span><span class="sc">${</span><span class="fu">esc</span>(today)<span class="sc">}</span></span>
+<span id="cb15-942"><a href="#cb15-942" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/div&gt;</span></span>
+<span id="cb15-943"><a href="#cb15-943" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/header&gt;</span></span>
+<span id="cb15-944"><a href="#cb15-944" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-945"><a href="#cb15-945" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h2&gt;Task 1: Brisbane Lions vs Geelong Cats Scoring Patterns&lt;/h2&gt;</span></span>
+<span id="cb15-946"><a href="#cb15-946" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Observed Frequencies&lt;/h3&gt;</span></span>
+<span id="cb15-947"><a href="#cb15-947" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;table&gt;</span></span>
+<span id="cb15-948"><a href="#cb15-948" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;thead&gt;</span></span>
+<span id="cb15-949"><a href="#cb15-949" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Team&lt;/th&gt;&lt;th&gt;Goals (n)&lt;/th&gt;&lt;th&gt;Behinds (n)&lt;/th&gt;&lt;th&gt;NoScore (n)&lt;/th&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-950"><a href="#cb15-950" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/thead&gt;</span></span>
+<span id="cb15-951"><a href="#cb15-951" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;tbody&gt;</span></span>
+<span id="cb15-952"><a href="#cb15-952" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Brisbane Lions&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(lions_goals))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(lions_behinds))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(lions_noscore))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-953"><a href="#cb15-953" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Geelong Cats&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(cats_goals))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(cats_behinds))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(cats_noscore))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-954"><a href="#cb15-954" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/tbody&gt;</span></span>
+<span id="cb15-955"><a href="#cb15-955" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/table&gt;</span></span>
+<span id="cb15-956"><a href="#cb15-956" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-957"><a href="#cb15-957" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Chi-Square Test Results&lt;/h3&gt;</span></span>
+<span id="cb15-958"><a href="#cb15-958" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;table&gt;</span></span>
+<span id="cb15-959"><a href="#cb15-959" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;tbody&gt;</span></span>
+<span id="cb15-960"><a href="#cb15-960" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;χ² statistic&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(afl_chi))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-961"><a href="#cb15-961" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Degrees of freedom&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(afl_df))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-962"><a href="#cb15-962" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;p-value&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(afl_p))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-963"><a href="#cb15-963" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Statistically significant?&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(afl_sig))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-964"><a href="#cb15-964" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/tbody&gt;</span></span>
+<span id="cb15-965"><a href="#cb15-965" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/table&gt;</span></span>
+<span id="cb15-966"><a href="#cb15-966" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-967"><a href="#cb15-967" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Interpretation&lt;/h3&gt;</span></span>
+<span id="cb15-968"><a href="#cb15-968" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;&lt;strong&gt;Q1: Key differences between teams?&lt;/strong&gt;&lt;br&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(afl_q1))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-969"><a href="#cb15-969" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;&lt;strong&gt;Q2: Strategic advice?&lt;/strong&gt;&lt;br&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(afl_q2))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-970"><a href="#cb15-970" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-971"><a href="#cb15-971" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h2&gt;Task 2: Goodness of Fit - Medication Adherence&lt;/h2&gt;</span></span>
+<span id="cb15-972"><a href="#cb15-972" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Observed vs Expected Frequencies&lt;/h3&gt;</span></span>
+<span id="cb15-973"><a href="#cb15-973" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;table&gt;</span></span>
+<span id="cb15-974"><a href="#cb15-974" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;thead&gt;</span></span>
+<span id="cb15-975"><a href="#cb15-975" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Category&lt;/th&gt;&lt;th&gt;Observed (n)&lt;/th&gt;&lt;th&gt;Observed (%)&lt;/th&gt;&lt;th&gt;Expected (n)&lt;/th&gt;&lt;th&gt;Expected (%)&lt;/th&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-976"><a href="#cb15-976" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/thead&gt;</span></span>
+<span id="cb15-977"><a href="#cb15-977" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;tbody&gt;</span></span>
+<span id="cb15-978"><a href="#cb15-978" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Fully Adherent&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(obs_full))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(obs_full_pct))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(exp_full))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;50%&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-979"><a href="#cb15-979" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Partially Adherent&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(obs_partial))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(obs_partial_pct))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(exp_partial))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;30%&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-980"><a href="#cb15-980" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Non-Adherent&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(obs_non))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(obs_non_pct))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(exp_non))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;20%&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-981"><a href="#cb15-981" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/tbody&gt;</span></span>
+<span id="cb15-982"><a href="#cb15-982" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/table&gt;</span></span>
+<span id="cb15-983"><a href="#cb15-983" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-984"><a href="#cb15-984" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Goodness of Fit Test Results&lt;/h3&gt;</span></span>
+<span id="cb15-985"><a href="#cb15-985" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;table&gt;</span></span>
+<span id="cb15-986"><a href="#cb15-986" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;tbody&gt;</span></span>
+<span id="cb15-987"><a href="#cb15-987" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;χ² statistic&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(gof_chi))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-988"><a href="#cb15-988" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Degrees of freedom&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(gof_df))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-989"><a href="#cb15-989" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;p-value&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(gof_p))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-990"><a href="#cb15-990" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Significant deviation?&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(gof_sig))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-991"><a href="#cb15-991" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/tbody&gt;</span></span>
+<span id="cb15-992"><a href="#cb15-992" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/table&gt;</span></span>
+<span id="cb15-993"><a href="#cb15-993" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-994"><a href="#cb15-994" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Clinical Significance&lt;/h3&gt;</span></span>
+<span id="cb15-995"><a href="#cb15-995" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="box"&gt;</span></span>
+<span id="cb15-996"><a href="#cb15-996" aria-hidden="true" tabindex="-1"></a><span class="vs">  Category with largest difference: </span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(largest_diff))<span class="sc">}</span><span class="vs">&lt;br&gt;</span></span>
+<span id="cb15-997"><a href="#cb15-997" aria-hidden="true" tabindex="-1"></a><span class="vs">  Direction of difference: </span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(direction))<span class="sc">}</span><span class="vs">&lt;br&gt;</span></span>
+<span id="cb15-998"><a href="#cb15-998" aria-hidden="true" tabindex="-1"></a><span class="vs">  Change in full adherence: </span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(improvement))<span class="sc">}</span><span class="vs">%&lt;br&gt;</span></span>
+<span id="cb15-999"><a href="#cb15-999" aria-hidden="true" tabindex="-1"></a><span class="vs">  Clinically meaningful? </span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(clinically_meaningful))<span class="sc">}</span></span>
+<span id="cb15-1000"><a href="#cb15-1000" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb15-1001"><a href="#cb15-1001" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1002"><a href="#cb15-1002" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Interpretation&lt;/h3&gt;</span></span>
+<span id="cb15-1003"><a href="#cb15-1003" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;&lt;strong&gt;Q1: Does the reminder system improve adherence?&lt;/strong&gt;&lt;br&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(gof_q1))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-1004"><a href="#cb15-1004" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;&lt;strong&gt;Q2: Should the system be implemented across all locations?&lt;/strong&gt;&lt;br&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(gof_q2))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-1005"><a href="#cb15-1005" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1006"><a href="#cb15-1006" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h2&gt;Task 3: Chi-Square Test of Independence - Exercise &amp; Injury&lt;/h2&gt;</span></span>
+<span id="cb15-1007"><a href="#cb15-1007" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Observed Frequencies &amp; Injury Rates&lt;/h3&gt;</span></span>
+<span id="cb15-1008"><a href="#cb15-1008" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;table&gt;</span></span>
+<span id="cb15-1009"><a href="#cb15-1009" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;thead&gt;</span></span>
+<span id="cb15-1010"><a href="#cb15-1010" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Exercise Type&lt;/th&gt;&lt;th&gt;Injured (n)&lt;/th&gt;&lt;th&gt;No Injury (n)&lt;/th&gt;&lt;th&gt;Injury Rate (%)&lt;/th&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1011"><a href="#cb15-1011" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/thead&gt;</span></span>
+<span id="cb15-1012"><a href="#cb15-1012" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;tbody&gt;</span></span>
+<span id="cb15-1013"><a href="#cb15-1013" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Resistance Training&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(resist_injured))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(resist_no_injury))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(resist_injury_pct))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1014"><a href="#cb15-1014" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;HIIT&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(hiit_injured))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(hiit_no_injury))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(hiit_injury_pct))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1015"><a href="#cb15-1015" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Yoga&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(yoga_injured))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(yoga_no_injury))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(yoga_injury_pct))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1016"><a href="#cb15-1016" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/tbody&gt;</span></span>
+<span id="cb15-1017"><a href="#cb15-1017" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/table&gt;</span></span>
+<span id="cb15-1018"><a href="#cb15-1018" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1019"><a href="#cb15-1019" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Chi-Square Test Results&lt;/h3&gt;</span></span>
+<span id="cb15-1020"><a href="#cb15-1020" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;table&gt;</span></span>
+<span id="cb15-1021"><a href="#cb15-1021" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;tbody&gt;</span></span>
+<span id="cb15-1022"><a href="#cb15-1022" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;χ² statistic&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(chi_square_stat))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1023"><a href="#cb15-1023" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Degrees of freedom&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(chi_df))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1024"><a href="#cb15-1024" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;p-value&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(chi_p))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1025"><a href="#cb15-1025" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Statistically significant?&lt;/th&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(chi_sig))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1026"><a href="#cb15-1026" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/tbody&gt;</span></span>
+<span id="cb15-1027"><a href="#cb15-1027" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/table&gt;</span></span>
+<span id="cb15-1028"><a href="#cb15-1028" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1029"><a href="#cb15-1029" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Standardised Residuals Analysis&lt;/h3&gt;</span></span>
+<span id="cb15-1030"><a href="#cb15-1030" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;table&gt;</span></span>
+<span id="cb15-1031"><a href="#cb15-1031" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;thead&gt;</span></span>
+<span id="cb15-1032"><a href="#cb15-1032" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;th&gt;Cell&lt;/th&gt;&lt;th&gt;Residual&lt;/th&gt;&lt;th&gt;Pattern&lt;/th&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1033"><a href="#cb15-1033" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/thead&gt;</span></span>
+<span id="cb15-1034"><a href="#cb15-1034" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;tbody&gt;</span></span>
+<span id="cb15-1035"><a href="#cb15-1035" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Resistance-Injured&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(resid_resist_inj))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(resist_pattern))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1036"><a href="#cb15-1036" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;HIIT-Injured&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(resid_hiit_inj))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(hiit_pattern))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1037"><a href="#cb15-1037" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;tr&gt;&lt;td&gt;Yoga-Injured&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(resid_yoga_inj))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;td&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(yoga_pattern))<span class="sc">}</span><span class="vs">&lt;/td&gt;&lt;/tr&gt;</span></span>
+<span id="cb15-1038"><a href="#cb15-1038" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/tbody&gt;</span></span>
+<span id="cb15-1039"><a href="#cb15-1039" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/table&gt;</span></span>
+<span id="cb15-1040"><a href="#cb15-1040" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1041"><a href="#cb15-1041" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Interpretation&lt;/h3&gt;</span></span>
+<span id="cb15-1042"><a href="#cb15-1042" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;&lt;strong&gt;Q1: Which exercise types differ from expected?&lt;/strong&gt;&lt;br&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(chi_q1))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-1043"><a href="#cb15-1043" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;&lt;strong&gt;Q2: Insurance recommendations?&lt;/strong&gt;&lt;br&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(chi_q2))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-1044"><a href="#cb15-1044" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;&lt;strong&gt;Q3: Programme changes to reduce injuries?&lt;/strong&gt;&lt;br&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(chi_q3))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-1045"><a href="#cb15-1045" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1046"><a href="#cb15-1046" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h2&gt;Task 4: Interpreting Chi-Square Results&lt;/h2&gt;</span></span>
+<span id="cb15-1047"><a href="#cb15-1047" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;h3&gt;Comprehensive Interpretation&lt;/h3&gt;</span></span>
+<span id="cb15-1048"><a href="#cb15-1048" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p&gt;</span><span class="sc">${</span><span class="fu">esc</span>(<span class="fu">safe</span>(comprehensive_interpretation))<span class="sc">}</span><span class="vs">&lt;/p&gt;</span></span>
+<span id="cb15-1049"><a href="#cb15-1049" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1050"><a href="#cb15-1050" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;hr style="margin-top:40px; border:none; border-top:1px solid #ddd"&gt;</span></span>
+<span id="cb15-1051"><a href="#cb15-1051" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p class="small"&gt;Generated from Workshop 8 - Chi-Square Analysis. Use Print → Save as PDF to keep a permanent copy.&lt;/p&gt;</span></span>
+<span id="cb15-1052"><a href="#cb15-1052" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/body&gt;</span></span>
+<span id="cb15-1053"><a href="#cb15-1053" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/html&gt;`</span><span class="op">;</span></span>
+<span id="cb15-1054"><a href="#cb15-1054" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-1055"><a href="#cb15-1055" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1056"><a href="#cb15-1056" aria-hidden="true" tabindex="-1"></a><span class="co">// Preview in a new tab (students can print to PDF)</span></span>
+<span id="cb15-1057"><a href="#cb15-1057" aria-hidden="true" tabindex="-1"></a>viewof previewSummary <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">button</span>(<span class="st">"📄 Preview Summary"</span><span class="op">,</span> {</span>
+<span id="cb15-1058"><a href="#cb15-1058" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reduce</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb15-1059"><a href="#cb15-1059" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> html <span class="op">=</span> <span class="fu">buildChiSquareSummaryHTML</span>()<span class="op">;</span></span>
+<span id="cb15-1060"><a href="#cb15-1060" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> w <span class="op">=</span> <span class="bu">window</span><span class="op">.</span><span class="fu">open</span>(<span class="st">""</span><span class="op">,</span> <span class="st">"_blank"</span>)<span class="op">;</span></span>
+<span id="cb15-1061"><a href="#cb15-1061" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span>w) {</span>
+<span id="cb15-1062"><a href="#cb15-1062" aria-hidden="true" tabindex="-1"></a>      <span class="fu">alert</span>(<span class="st">"Pop-up blocked. Please allow pop-ups for this site to preview the summary."</span>)<span class="op">;</span></span>
+<span id="cb15-1063"><a href="#cb15-1063" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb15-1064"><a href="#cb15-1064" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-1065"><a href="#cb15-1065" aria-hidden="true" tabindex="-1"></a>    w<span class="op">.</span><span class="at">document</span><span class="op">.</span><span class="fu">write</span>(html)<span class="op">;</span></span>
+<span id="cb15-1066"><a href="#cb15-1066" aria-hidden="true" tabindex="-1"></a>    w<span class="op">.</span><span class="at">document</span><span class="op">.</span><span class="fu">close</span>()<span class="op">;</span></span>
+<span id="cb15-1067"><a href="#cb15-1067" aria-hidden="true" tabindex="-1"></a>    w<span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb15-1068"><a href="#cb15-1068" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">"opened"</span><span class="op">;</span></span>
+<span id="cb15-1069"><a href="#cb15-1069" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-1070"><a href="#cb15-1070" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb15-1071"><a href="#cb15-1071" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-1072"><a href="#cb15-1072" aria-hidden="true" tabindex="-1"></a><span class="co">// Download as a clean .html report</span></span>
+<span id="cb15-1073"><a href="#cb15-1073" aria-hidden="true" tabindex="-1"></a>viewof downloadSummary <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">button</span>(<span class="st">"⬇️ Download Summary (.html)"</span><span class="op">,</span> {</span>
+<span id="cb15-1074"><a href="#cb15-1074" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reduce</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb15-1075"><a href="#cb15-1075" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> html <span class="op">=</span> <span class="fu">buildChiSquareSummaryHTML</span>()<span class="op">;</span></span>
+<span id="cb15-1076"><a href="#cb15-1076" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> blob <span class="op">=</span> <span class="kw">new</span> <span class="bu">Blob</span>([html]<span class="op">,</span> { <span class="dt">type</span><span class="op">:</span> <span class="st">"text/html"</span> })<span class="op">;</span></span>
+<span id="cb15-1077"><a href="#cb15-1077" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> url <span class="op">=</span> URL<span class="op">.</span><span class="fu">createObjectURL</span>(blob)<span class="op">;</span></span>
+<span id="cb15-1078"><a href="#cb15-1078" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> filename <span class="op">=</span> <span class="st">'workshop8_'</span> <span class="op">+</span> (studentName <span class="op">||</span> <span class="st">'student'</span>)</span>
+<span id="cb15-1079"><a href="#cb15-1079" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">toString</span>()<span class="op">.</span><span class="fu">replace</span>(<span class="ss">/</span><span class="sc">[^a-zA-Z0-9]</span><span class="ss">/g</span><span class="op">,</span> <span class="st">'_'</span>) <span class="op">+</span> <span class="st">'_summary_'</span> <span class="op">+</span></span>
+<span id="cb15-1080"><a href="#cb15-1080" aria-hidden="true" tabindex="-1"></a>      <span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">toISOString</span>()<span class="op">.</span><span class="fu">split</span>(<span class="st">'T'</span>)[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'.html'</span><span class="op">;</span></span>
+<span id="cb15-1081"><a href="#cb15-1081" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> a <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">'a'</span>)<span class="op">;</span></span>
+<span id="cb15-1082"><a href="#cb15-1082" aria-hidden="true" tabindex="-1"></a>    a<span class="op">.</span><span class="at">href</span> <span class="op">=</span> url<span class="op">;</span></span>
+<span id="cb15-1083"><a href="#cb15-1083" aria-hidden="true" tabindex="-1"></a>    a<span class="op">.</span><span class="at">download</span> <span class="op">=</span> filename<span class="op">;</span></span>
+<span id="cb15-1084"><a href="#cb15-1084" aria-hidden="true" tabindex="-1"></a>    <span class="bu">document</span><span class="op">.</span><span class="at">body</span><span class="op">.</span><span class="fu">appendChild</span>(a)<span class="op">;</span></span>
+<span id="cb15-1085"><a href="#cb15-1085" aria-hidden="true" tabindex="-1"></a>    a<span class="op">.</span><span class="fu">click</span>()<span class="op">;</span></span>
+<span id="cb15-1086"><a href="#cb15-1086" aria-hidden="true" tabindex="-1"></a>    a<span class="op">.</span><span class="fu">remove</span>()<span class="op">;</span></span>
+<span id="cb15-1087"><a href="#cb15-1087" aria-hidden="true" tabindex="-1"></a>    URL<span class="op">.</span><span class="fu">revokeObjectURL</span>(url)<span class="op">;</span></span>
+<span id="cb15-1088"><a href="#cb15-1088" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> filename<span class="op">;</span></span>
+<span id="cb15-1089"><a href="#cb15-1089" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-1090"><a href="#cb15-1090" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Before You Leave
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Save your work using the button above</li>
+<li>The file can be opened in any browser to review your responses</li>
+</ol>
+</div>
+</div>
+<hr>
+<p><em>Document generated by Aaron Bach on 2025-09-21 using R version 4.2.2 and Quarto</em></p>
+</section>
+
+</main>
+<!-- /main column -->
+
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"viewof studentName = Inputs.text({\n  label: html`<strong>Your Name:</strong>`,\n  placeholder: \"Enter your name\"\n})\n\nviewof studentID = Inputs.text({\n  label: html`<strong>Student ID:</strong>`,\n  placeholder: \"Enter your student ID\"\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"viewof lions_goals = Inputs.text({\n  label: \"Brisbane Lions - Goals (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof lions_behinds = Inputs.text({\n  label: \"Brisbane Lions - Behinds (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof lions_noscore = Inputs.text({\n  label: \"Brisbane Lions - NoScore (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof cats_goals = Inputs.text({\n  label: \"Geelong Cats - Goals (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof cats_behinds = Inputs.text({\n  label: \"Geelong Cats - Behinds (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof cats_noscore = Inputs.text({\n  label: \"Geelong Cats - NoScore (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"viewof afl_chi = Inputs.text({\n  label: \"χ² statistic:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter chi-square value\"\n})\n\nviewof afl_df = Inputs.text({\n  label: \"Degrees of freedom:\",\n  type: \"number\",\n  placeholder: \"Enter df\"\n})\n\nviewof afl_p = Inputs.text({\n  label: \"p-value:\",\n  type: \"number\",\n  step: 0.001,\n  placeholder: \"Enter p-value\"\n})\n\nviewof afl_sig = Inputs.select(\n  [\"\", \"Yes (p < 0.05), we need a post-hoc test\", \"No (p ≥ 0.05)\"],\n  {label: \"Statistically significant?\"}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"viewof afl_q1 = Inputs.textarea({\n  label: \"1. Based on the standardised residuals from Jamovi, what is the key difference between the teams' scoring patterns?\",\n  placeholder: \"Look for residuals > |2| to identify significant differences...\",\n  rows: 3\n})\n\nviewof afl_q2 = Inputs.textarea({\n  label: \"2. What strategic advice would you give your mate based on this analysis?\",\n  placeholder: \"Consider what the scoring patterns reveal about each team's strengths and weaknesses...\",\n  rows: 3\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"viewof obs_full = Inputs.text({\n  label: \"Fully Adherent - Observed (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof obs_full_pct = Inputs.text({\n  label: \"Fully Adherent - Observed (%):\",\n  type: \"number\",\n  step: 0.1,\n  placeholder: \"Enter percentage\"\n})\n\nviewof exp_full = Inputs.text({\n  label: \"Fully Adherent - Expected (n):\",\n  type: \"number\",\n  placeholder: \"Should be 100 (50% of 200)\"\n})\n\nviewof obs_partial = Inputs.text({\n  label: \"Partially Adherent - Observed (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof obs_partial_pct = Inputs.text({\n  label: \"Partially Adherent - Observed (%):\",\n  type: \"number\",\n  step: 0.1,\n  placeholder: \"Enter percentage\"\n})\n\nviewof exp_partial = Inputs.text({\n  label: \"Partially Adherent - Expected (n):\",\n  type: \"number\",\n  placeholder: \"Should be 60 (30% of 200)\"\n})\n\nviewof obs_non = Inputs.text({\n  label: \"Non-Adherent - Observed (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof obs_non_pct = Inputs.text({\n  label: \"Non-Adherent - Observed (%):\",\n  type: \"number\",\n  step: 0.1,\n  placeholder: \"Enter percentage\"\n})\n\nviewof exp_non = Inputs.text({\n  label: \"Non-Adherent - Expected (n):\",\n  type: \"number\",\n  placeholder: \"Should be 40 (20% of 200)\"\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"viewof gof_chi = Inputs.text({\n  label: \"χ² statistic:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter chi-square value\"\n})\n\nviewof gof_df = Inputs.text({\n  label: \"Degrees of freedom:\",\n  type: \"number\",\n  placeholder: \"Enter df (should be 2)\"\n})\n\nviewof gof_p = Inputs.text({\n  label: \"p-value:\",\n  type: \"number\",\n  step: 0.001,\n  placeholder: \"Enter p-value\"\n})\n\nviewof gof_sig = Inputs.select(\n  [\"\", \"Yes (p < 0.05)\", \"No (p ≥ 0.05)\"],\n  {label: \"Significant deviation from expected?\"}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"viewof largest_diff = Inputs.select(\n  [\"\", \"Fully Adherent\", \"Partially Adherent\", \"Non-Adherent\"],\n  {label: \"Which category shows the largest difference from expected?\"}\n)\n\nviewof direction = Inputs.select(\n  [\"\", \"More than expected\", \"Less than expected\"],\n  {label: \"Is this category higher or lower than expected?\"}\n)\n\nviewof improvement = Inputs.text({\n  label: \"Change in full adherence rate (observed % - expected 50%):\",\n  type: \"number\",\n  step: 0.1,\n  placeholder: \"Calculate difference\"\n})\n\nviewof clinically_meaningful = Inputs.select(\n  [\"\", \"Yes (≥10% improvement)\", \"No (<10% improvement)\", \"Decrease (worse than expected)\"],\n  {label: \"Is the change in full adherence clinically meaningful?\"}\n)\n\nviewof gof_q1 = Inputs.textarea({\n  label: \"1. Does the reminder system improve medication adherence? Explain using the data.\",\n  placeholder: \"Consider which categories increased or decreased compared to industry norms...\",\n  rows: 3\n})\n\nviewof gof_q2 = Inputs.textarea({\n  label: \"2. Should the pharmacy implement this system across all locations? Justify with both statistical significance and practical impact.\",\n  placeholder: \"Consider the p-value, actual percentage changes, and clinical meaningfulness...\",\n  rows: 3\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"viewof resist_injured = Inputs.text({\n  label: \"Resistance Training - Injured (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof resist_no_injury = Inputs.text({\n  label: \"Resistance Training - No Injury (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof resist_injury_pct = Inputs.text({\n  label: \"Resistance Training - Injury Rate (%):\",\n  type: \"number\",\n  step: 0.1,\n  placeholder: \"Enter percentage\"\n})\n\nviewof hiit_injured = Inputs.text({\n  label: \"HIIT - Injured (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof hiit_no_injury = Inputs.text({\n  label: \"HIIT - No Injury (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof hiit_injury_pct = Inputs.text({\n  label: \"HIIT - Injury Rate (%):\",\n  type: \"number\",\n  step: 0.1,\n  placeholder: \"Enter percentage\"\n})\n\nviewof yoga_injured = Inputs.text({\n  label: \"Yoga - Injured (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof yoga_no_injury = Inputs.text({\n  label: \"Yoga - No Injury (n):\",\n  type: \"number\",\n  placeholder: \"Enter count\"\n})\n\nviewof yoga_injury_pct = Inputs.text({\n  label: \"Yoga - Injury Rate (%):\",\n  type: \"number\",\n  step: 0.1,\n  placeholder: \"Enter percentage\"\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"viewof chi_square_stat = Inputs.text({\n  label: \"χ² statistic:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter chi-square value\"\n})\n\nviewof chi_df = Inputs.text({\n  label: \"Degrees of freedom:\",\n  type: \"number\",\n  placeholder: \"Enter df\"\n})\n\nviewof chi_p = Inputs.text({\n  label: \"p-value:\",\n  type: \"number\",\n  step: 0.001,\n  placeholder: \"Enter p-value\"\n})\n\nviewof chi_sig = Inputs.select(\n  [\"\", \"Yes (p < 0.05)\", \"No (p ≥ 0.05)\"],\n  {label: \"Statistically significant?\"}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-10","inline":false,"source":"viewof resid_resist_inj = Inputs.text({\n  label: \"Resistance-Injured residual:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter standardised residual\"\n})\n\nviewof resid_resist_no = Inputs.text({\n  label: \"Resistance-No Injury residual:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter standardised residual\"\n})\n\nviewof resist_pattern = Inputs.select(\n  [\"\", \"More injuries than expected (>+2)\", \"Fewer injuries than expected (<-2)\", \"As expected (-2 to +2)\"],\n  {label: \"Resistance pattern:\"}\n)\n\nviewof resid_hiit_inj = Inputs.text({\n  label: \"HIIT-Injured residual:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter standardised residual\"\n})\n\nviewof resid_hiit_no = Inputs.text({\n  label: \"HIIT-No Injury residual:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter standardised residual\"\n})\n\nviewof hiit_pattern = Inputs.select(\n  [\"\", \"More injuries than expected (>+2)\", \"Fewer injuries than expected (<-2)\", \"As expected (-2 to +2)\"],\n  {label: \"HIIT pattern:\"}\n)\n\nviewof resid_yoga_inj = Inputs.text({\n  label: \"Yoga-Injured residual:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter standardised residual\"\n})\n\nviewof resid_yoga_no = Inputs.text({\n  label: \"Yoga-No Injury residual:\",\n  type: \"number\",\n  step: 0.01,\n  placeholder: \"Enter standardised residual\"\n})\n\nviewof yoga_pattern = Inputs.select(\n  [\"\", \"More injuries than expected (>+2)\", \"Fewer injuries than expected (<-2)\", \"As expected (-2 to +2)\"],\n  {label: \"Yoga pattern:\"}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-11","inline":false,"source":"viewof chi_q1 = Inputs.textarea({\n  label: \"1. Which exercise type(s) have injury rates that differ significantly from expected? How do you know?\",\n  placeholder: \"Consider the standardised residuals and what they tell you...\",\n  rows: 3\n})\n\nviewof chi_q2 = Inputs.textarea({\n  label: \"2. Based on the actual percentages AND the standardised residuals, what would you tell the insurance company?\",\n  placeholder: \"Consider both the raw injury rates and which differences are statistically meaningful...\",\n  rows: 3\n})\n\nviewof chi_q3 = Inputs.textarea({\n  label: \"3. If the gym wants to reduce overall injury rates, which programme needs the most attention and why?\",\n  placeholder: \"Think about where the problem actually lies based on your analysis...\",\n  rows: 3\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-12","inline":false,"source":"viewof comprehensive_interpretation = Inputs.textarea({\n  label: \"Write a complete interpretation including: (1) A formal results statement with statistics, (2) What this means practically for exercise and caffeine recommendations, and (3) One key limitation of this analysis:\",\n  placeholder: \"Address all three components in your response...\",\n  rows: 8\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-13","inline":false,"source":"viewof showExpertChi = Inputs.toggle({label: \"🔍 Show Expert Interpretation\", value: false})\n"},{"methodName":"interpret","cellName":"ojs-cell-14","inline":false,"source":"showExpertChi ? html`<div style=\"background-color: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3; margin: 15px 0;\">\n<strong>Expert Comprehensive Interpretation:</strong><br><br>\n\n<strong>(1) First paragraph of a Discussion should be your key results with context:</strong><br>\nA chi-square test of independence revealed a significant association between exercise timing and caffeine consumption patterns, χ²(2) = 12.84, p = 0.002. Evening exercisers were more likely to avoid caffeine entirely (35% vs 15% for morning exercisers) and less likely to consume high amounts (25% vs 40%). Moderate consumption showed similar proportions across both groups (45% morning, 40% evening).<br><br>\n\n<strong>(2) Second (and third) paragraph should bring in some practical implications and position the results with wider research:</strong><br>\nThese findings suggest exercise professionals should tailor caffeine recommendations based on workout timing. Morning exercisers may benefit from moderate-to-high caffeine intake for performance enhancement without sleep concerns. Evening exercisers should be counselled about caffeine's 5-6 hour half-life and potential sleep disruption (Good spot for a reference of wider literature). The 25% of evening exercisers still consuming high amounts of caffeine may particularly benefit from education about how this could impair recovery through poor sleep quality. Practitioners might recommend switching to morning workouts for those who want to maintain high caffeine intake, or transitioning to decaffeinated alternatives after 2pm for committed evening exercisers.<br><br>\n\n<strong>(3) Optional (space allowing) a limitation of the design, analysis and/or future directions on the back of your paper can be before the conclusion paragraph:</strong><br>\nChi-square tests only reveal associations, not causation. We cannot determine whether caffeine-sensitive individuals choose evening workouts to accommodate their lower caffeine tolerance, or whether evening exercisers reduce caffeine intake due to sleep concerns. Additionally, converting continuous data to categories loses important information—someone drinking 3 cups differs meaningfully from someone drinking 6+ cups, yet both are classified identically as 'high consumption.'\n\n*Personally the critique of the analysis method is not the best for the assingment I would be relying on the study design (what other variables would have helped your study for instance). </div>` : html`<p style=\"color: #666; font-style: italic;\">Click the toggle above to reveal the expert interpretation after completing your own response.</p>`\n"},{"methodName":"interpret","cellName":"ojs-cell-15","inline":false,"source":"// Helper function to build a clean, printable HTML report\nfunction buildChiSquareSummaryHTML() {\n  const esc = (s) => (s ?? '').toString()\n    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');\n\n  const safe = (x) => x && x.length !== 0 ? x : '—';\n\n  const today = new Date().toLocaleDateString();\n  const name = (studentName || '').toString().trim();\n  const id = (studentID || '').toString().trim();\n\n  return `<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<title>Workshop 8 Summary — ${esc(name || 'Student')}</title>\n<style>\n  :root { --ink:#111; --muted:#666; --band:#f6f8fa; }\n  * { box-sizing:border-box }\n  body { font-family: system-ui, -apple-system, sans-serif; color:var(--ink); margin:32px; line-height:1.5 }\n  header { border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:24px }\n  h1 { margin:0 0 6px; font-size:1.6rem }\n  .meta { color:var(--muted); font-size:0.95rem }\n  h2 { margin-top:28px; border-bottom:1px solid #eee; padding-bottom:6px; font-size:1.2rem }\n  h3 { margin-top:20px; font-size:1.1rem; color:#333 }\n  table { border-collapse:collapse; width:100%; margin:10px 0 16px; font-size:0.95rem }\n  th, td { border:1px solid #ddd; padding:8px 10px; vertical-align:top }\n  th { background:var(--band); text-align:left }\n  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px }\n  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px }\n  .box { background:var(--band); padding:12px; border-radius:8px }\n  .small { color:var(--muted); font-size:0.9rem }\n  .highlight { background:#e3f2fd; padding:12px; border-radius:8px; margin:10px 0 }\n  @media print { body { margin:0.8in } }\n</style>\n</head>\n<body>\n<header>\n  <h1>Workshop 8 — Chi-Square Analysis Summary</h1>\n  <div class=\"meta\">\n    <strong>Name:</strong> ${esc(safe(name))} &nbsp;|&nbsp;\n    <strong>Student ID:</strong> ${esc(safe(id))} &nbsp;|&nbsp;\n    <strong>Date:</strong> ${esc(today)}\n  </div>\n</header>\n\n<h2>Task 1: Brisbane Lions vs Geelong Cats Scoring Patterns</h2>\n<h3>Observed Frequencies</h3>\n<table>\n  <thead>\n    <tr><th>Team</th><th>Goals (n)</th><th>Behinds (n)</th><th>NoScore (n)</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Brisbane Lions</td><td>${esc(safe(lions_goals))}</td><td>${esc(safe(lions_behinds))}</td><td>${esc(safe(lions_noscore))}</td></tr>\n    <tr><td>Geelong Cats</td><td>${esc(safe(cats_goals))}</td><td>${esc(safe(cats_behinds))}</td><td>${esc(safe(cats_noscore))}</td></tr>\n  </tbody>\n</table>\n\n<h3>Chi-Square Test Results</h3>\n<table>\n  <tbody>\n    <tr><th>χ² statistic</th><td>${esc(safe(afl_chi))}</td></tr>\n    <tr><th>Degrees of freedom</th><td>${esc(safe(afl_df))}</td></tr>\n    <tr><th>p-value</th><td>${esc(safe(afl_p))}</td></tr>\n    <tr><th>Statistically significant?</th><td>${esc(safe(afl_sig))}</td></tr>\n  </tbody>\n</table>\n\n<h3>Interpretation</h3>\n<p><strong>Q1: Key differences between teams?</strong><br>${esc(safe(afl_q1))}</p>\n<p><strong>Q2: Strategic advice?</strong><br>${esc(safe(afl_q2))}</p>\n\n<h2>Task 2: Goodness of Fit - Medication Adherence</h2>\n<h3>Observed vs Expected Frequencies</h3>\n<table>\n  <thead>\n    <tr><th>Category</th><th>Observed (n)</th><th>Observed (%)</th><th>Expected (n)</th><th>Expected (%)</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Fully Adherent</td><td>${esc(safe(obs_full))}</td><td>${esc(safe(obs_full_pct))}</td><td>${esc(safe(exp_full))}</td><td>50%</td></tr>\n    <tr><td>Partially Adherent</td><td>${esc(safe(obs_partial))}</td><td>${esc(safe(obs_partial_pct))}</td><td>${esc(safe(exp_partial))}</td><td>30%</td></tr>\n    <tr><td>Non-Adherent</td><td>${esc(safe(obs_non))}</td><td>${esc(safe(obs_non_pct))}</td><td>${esc(safe(exp_non))}</td><td>20%</td></tr>\n  </tbody>\n</table>\n\n<h3>Goodness of Fit Test Results</h3>\n<table>\n  <tbody>\n    <tr><th>χ² statistic</th><td>${esc(safe(gof_chi))}</td></tr>\n    <tr><th>Degrees of freedom</th><td>${esc(safe(gof_df))}</td></tr>\n    <tr><th>p-value</th><td>${esc(safe(gof_p))}</td></tr>\n    <tr><th>Significant deviation?</th><td>${esc(safe(gof_sig))}</td></tr>\n  </tbody>\n</table>\n\n<h3>Clinical Significance</h3>\n<div class=\"box\">\n  Category with largest difference: ${esc(safe(largest_diff))}<br>\n  Direction of difference: ${esc(safe(direction))}<br>\n  Change in full adherence: ${esc(safe(improvement))}%<br>\n  Clinically meaningful? ${esc(safe(clinically_meaningful))}\n</div>\n\n<h3>Interpretation</h3>\n<p><strong>Q1: Does the reminder system improve adherence?</strong><br>${esc(safe(gof_q1))}</p>\n<p><strong>Q2: Should the system be implemented across all locations?</strong><br>${esc(safe(gof_q2))}</p>\n\n<h2>Task 3: Chi-Square Test of Independence - Exercise & Injury</h2>\n<h3>Observed Frequencies & Injury Rates</h3>\n<table>\n  <thead>\n    <tr><th>Exercise Type</th><th>Injured (n)</th><th>No Injury (n)</th><th>Injury Rate (%)</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Resistance Training</td><td>${esc(safe(resist_injured))}</td><td>${esc(safe(resist_no_injury))}</td><td>${esc(safe(resist_injury_pct))}</td></tr>\n    <tr><td>HIIT</td><td>${esc(safe(hiit_injured))}</td><td>${esc(safe(hiit_no_injury))}</td><td>${esc(safe(hiit_injury_pct))}</td></tr>\n    <tr><td>Yoga</td><td>${esc(safe(yoga_injured))}</td><td>${esc(safe(yoga_no_injury))}</td><td>${esc(safe(yoga_injury_pct))}</td></tr>\n  </tbody>\n</table>\n\n<h3>Chi-Square Test Results</h3>\n<table>\n  <tbody>\n    <tr><th>χ² statistic</th><td>${esc(safe(chi_square_stat))}</td></tr>\n    <tr><th>Degrees of freedom</th><td>${esc(safe(chi_df))}</td></tr>\n    <tr><th>p-value</th><td>${esc(safe(chi_p))}</td></tr>\n    <tr><th>Statistically significant?</th><td>${esc(safe(chi_sig))}</td></tr>\n  </tbody>\n</table>\n\n<h3>Standardised Residuals Analysis</h3>\n<table>\n  <thead>\n    <tr><th>Cell</th><th>Residual</th><th>Pattern</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Resistance-Injured</td><td>${esc(safe(resid_resist_inj))}</td><td>${esc(safe(resist_pattern))}</td></tr>\n    <tr><td>HIIT-Injured</td><td>${esc(safe(resid_hiit_inj))}</td><td>${esc(safe(hiit_pattern))}</td></tr>\n    <tr><td>Yoga-Injured</td><td>${esc(safe(resid_yoga_inj))}</td><td>${esc(safe(yoga_pattern))}</td></tr>\n  </tbody>\n</table>\n\n<h3>Interpretation</h3>\n<p><strong>Q1: Which exercise types differ from expected?</strong><br>${esc(safe(chi_q1))}</p>\n<p><strong>Q2: Insurance recommendations?</strong><br>${esc(safe(chi_q2))}</p>\n<p><strong>Q3: Programme changes to reduce injuries?</strong><br>${esc(safe(chi_q3))}</p>\n\n<h2>Task 4: Interpreting Chi-Square Results</h2>\n<h3>Comprehensive Interpretation</h3>\n<p>${esc(safe(comprehensive_interpretation))}</p>\n\n<hr style=\"margin-top:40px; border:none; border-top:1px solid #ddd\">\n<p class=\"small\">Generated from Workshop 8 - Chi-Square Analysis. Use Print → Save as PDF to keep a permanent copy.</p>\n</body>\n</html>`;\n}\n\n// Preview in a new tab (students can print to PDF)\nviewof previewSummary = Inputs.button(\"📄 Preview Summary\", {\n  reduce: () => {\n    const html = buildChiSquareSummaryHTML();\n    const w = window.open(\"\", \"_blank\");\n    if (!w) {\n      alert(\"Pop-up blocked. Please allow pop-ups for this site to preview the summary.\");\n      return null;\n    }\n    w.document.write(html);\n    w.document.close();\n    w.focus();\n    return \"opened\";\n  }\n})\n\n// Download as a clean .html report\nviewof downloadSummary = Inputs.button(\"⬇️ Download Summary (.html)\", {\n  reduce: () => {\n    const html = buildChiSquareSummaryHTML();\n    const blob = new Blob([html], { type: \"text/html\" });\n    const url = URL.createObjectURL(blob);\n    const filename = 'workshop8_' + (studentName || 'student')\n      .toString().replace(/[^a-zA-Z0-9]/g, '_') + '_summary_' +\n      new Date().toISOString().split('T')[0] + '.html';\n    const a = document.createElement('a');\n    a.href = url;\n    a.download = filename;\n    document.body.appendChild(a);\n    a.click();\n    a.remove();\n    URL.revokeObjectURL(url);\n    return filename;\n  }\n})\n"},{"methodName":"interpretQuiet","source":"shinyInput('studentName')"},{"methodName":"interpretQuiet","source":"shinyInput('studentID')"},{"methodName":"interpretQuiet","source":"shinyInput('lions_goals')"},{"methodName":"interpretQuiet","source":"shinyInput('lions_behinds')"},{"methodName":"interpretQuiet","source":"shinyInput('lions_noscore')"},{"methodName":"interpretQuiet","source":"shinyInput('cats_goals')"},{"methodName":"interpretQuiet","source":"shinyInput('cats_behinds')"},{"methodName":"interpretQuiet","source":"shinyInput('cats_noscore')"},{"methodName":"interpretQuiet","source":"shinyInput('afl_chi')"},{"methodName":"interpretQuiet","source":"shinyInput('afl_df')"},{"methodName":"interpretQuiet","source":"shinyInput('afl_p')"},{"methodName":"interpretQuiet","source":"shinyInput('afl_sig')"},{"methodName":"interpretQuiet","source":"shinyInput('afl_q1')"},{"methodName":"interpretQuiet","source":"shinyInput('afl_q2')"},{"methodName":"interpretQuiet","source":"shinyInput('obs_full')"},{"methodName":"interpretQuiet","source":"shinyInput('obs_full_pct')"},{"methodName":"interpretQuiet","source":"shinyInput('exp_full')"},{"methodName":"interpretQuiet","source":"shinyInput('obs_partial')"},{"methodName":"interpretQuiet","source":"shinyInput('obs_partial_pct')"},{"methodName":"interpretQuiet","source":"shinyInput('exp_partial')"},{"methodName":"interpretQuiet","source":"shinyInput('obs_non')"},{"methodName":"interpretQuiet","source":"shinyInput('obs_non_pct')"},{"methodName":"interpretQuiet","source":"shinyInput('exp_non')"},{"methodName":"interpretQuiet","source":"shinyInput('gof_chi')"},{"methodName":"interpretQuiet","source":"shinyInput('gof_df')"},{"methodName":"interpretQuiet","source":"shinyInput('gof_p')"},{"methodName":"interpretQuiet","source":"shinyInput('gof_sig')"},{"methodName":"interpretQuiet","source":"shinyInput('largest_diff')"},{"methodName":"interpretQuiet","source":"shinyInput('direction')"},{"methodName":"interpretQuiet","source":"shinyInput('improvement')"},{"methodName":"interpretQuiet","source":"shinyInput('clinically_meaningful')"},{"methodName":"interpretQuiet","source":"shinyInput('gof_q1')"},{"methodName":"interpretQuiet","source":"shinyInput('gof_q2')"},{"methodName":"interpretQuiet","source":"shinyInput('resist_injured')"},{"methodName":"interpretQuiet","source":"shinyInput('resist_no_injury')"},{"methodName":"interpretQuiet","source":"shinyInput('resist_injury_pct')"},{"methodName":"interpretQuiet","source":"shinyInput('hiit_injured')"},{"methodName":"interpretQuiet","source":"shinyInput('hiit_no_injury')"},{"methodName":"interpretQuiet","source":"shinyInput('hiit_injury_pct')"},{"methodName":"interpretQuiet","source":"shinyInput('yoga_injured')"},{"methodName":"interpretQuiet","source":"shinyInput('yoga_no_injury')"},{"methodName":"interpretQuiet","source":"shinyInput('yoga_injury_pct')"},{"methodName":"interpretQuiet","source":"shinyInput('chi_square_stat')"},{"methodName":"interpretQuiet","source":"shinyInput('chi_df')"},{"methodName":"interpretQuiet","source":"shinyInput('chi_p')"},{"methodName":"interpretQuiet","source":"shinyInput('chi_sig')"},{"methodName":"interpretQuiet","source":"shinyInput('resid_resist_inj')"},{"methodName":"interpretQuiet","source":"shinyInput('resid_resist_no')"},{"methodName":"interpretQuiet","source":"shinyInput('resist_pattern')"},{"methodName":"interpretQuiet","source":"shinyInput('resid_hiit_inj')"},{"methodName":"interpretQuiet","source":"shinyInput('resid_hiit_no')"},{"methodName":"interpretQuiet","source":"shinyInput('hiit_pattern')"},{"methodName":"interpretQuiet","source":"shinyInput('resid_yoga_inj')"},{"methodName":"interpretQuiet","source":"shinyInput('resid_yoga_no')"},{"methodName":"interpretQuiet","source":"shinyInput('yoga_pattern')"},{"methodName":"interpretQuiet","source":"shinyInput('chi_q1')"},{"methodName":"interpretQuiet","source":"shinyInput('chi_q2')"},{"methodName":"interpretQuiet","source":"shinyInput('chi_q3')"},{"methodName":"interpretQuiet","source":"shinyInput('comprehensive_interpretation')"},{"methodName":"interpretQuiet","source":"shinyInput('showExpertChi')"},{"methodName":"interpretQuiet","source":"shinyInput('previewSummary')"},{"methodName":"interpretQuiet","source":"shinyInput('downloadSummary')"}]}
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../..";
+window._ojs.paths.runtimeToRoot = "../../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
